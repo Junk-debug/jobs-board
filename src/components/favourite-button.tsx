@@ -1,4 +1,4 @@
-import { HeartIcon } from "lucide-react";
+import { BookmarkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useFavourite } from "@/stores/favourites.store";
@@ -33,7 +33,7 @@ export function FavouriteButton({
         className
       )}
     >
-      <HeartIcon className={cn("size-5", isFavourite && "fill-current")} />
+      <BookmarkIcon className={cn("size-5", isFavourite && "fill-current")} />
     </Button>
   );
 }
