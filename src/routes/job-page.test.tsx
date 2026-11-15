@@ -1,7 +1,7 @@
 import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { renderRoute } from "@/test/render-route";
 import { fixtures, JOB_DETAILS_URL, server } from "@/test/server";
 
@@ -69,6 +69,7 @@ describe("Job page", () => {
   });
 
   it("shows not found for an unknown job", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
     renderRoute("/job/00000000-0000-4000-8000-000000000000");
 
     expect(

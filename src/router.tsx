@@ -1,5 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
 import type { RouteObject } from "react-router";
+import { JobDetailsSkeleton } from "@/components/job-details/job-details-skeleton";
 import { FavouritesPage } from "@/routes/favourites-page";
 import { createJobPageLoader, JobPage } from "@/routes/job-page";
 import { JobsPage } from "@/routes/jobs-page";
@@ -20,6 +21,7 @@ export function createRoutes(queryClient: QueryClient): RouteObject[] {
             {
               path: "job/:id",
               loader: createJobPageLoader(queryClient),
+              hydrateFallbackElement: <JobDetailsSkeleton />,
               element: <JobPage />,
             },
             { path: "favourites", element: <FavouritesPage /> },
