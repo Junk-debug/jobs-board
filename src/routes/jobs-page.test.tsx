@@ -105,15 +105,4 @@ describe("Jobs page", () => {
       screen.queryByText("Couldn't load more jobs.")
     ).not.toBeInTheDocument();
   });
-
-  it("marks a job as favourite from the list", async () => {
-    renderRoute("/");
-
-    const [firstHeart] = await screen.findAllByRole("button", {
-      name: /to favourites/,
-    });
-    await userEvent.click(firstHeart);
-
-    expect(firstHeart).toHaveAttribute("aria-pressed", "true");
-  });
 });

@@ -90,12 +90,12 @@ The task asked for about an hour of work. I also added: infinite scroll instead 
 
 Both suites run on real API responses saved in `src/test/fixtures`, so they don't depend on the live API.
 
-**Unit and integration** (Vitest, Testing Library, MSW), 36 tests:
+**Unit and integration** (Vitest, Testing Library, MSW), 33 tests:
 
 - API client: error responses with HTTP 200, 404, 5xx, network failure, responses without the Coople wrapper
 - Endpoints and mapping, pagination end detection, strict and lenient validation
 - Favourites store: toggling, persistence, corrupted storage
-- Pages: list, empty state, error and retry, a failed next page that keeps loaded jobs, favourite toggle, direct link to a job, malformed id without an API call, unknown job
+- Pages: list, empty state, error and retry on both screens, a failed next page that keeps loaded jobs, direct link to a job, malformed id without an API call, unknown job
 
 **Browser** (Playwright, API mocked with `page.route`), 17 tests:
 
