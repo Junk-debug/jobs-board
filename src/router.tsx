@@ -1,5 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
 import type { RouteObject } from "react-router";
+import { FavouritesPage } from "@/routes/favourites-page";
 import { createJobPageLoader, JobPage } from "@/routes/job-page";
 import { JobsPage } from "@/routes/jobs-page";
 import { NotFoundPage } from "@/routes/not-found-page";
@@ -21,6 +22,7 @@ export function createRoutes(queryClient: QueryClient): RouteObject[] {
               loader: createJobPageLoader(queryClient),
               element: <JobPage />,
             },
+            { path: "favourites", element: <FavouritesPage /> },
             { path: "*", element: <NotFoundPage /> },
           ],
         },

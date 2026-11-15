@@ -4,7 +4,7 @@ A minimal two-screen web app over Coople's public jobs API:
 
 - **Job list** at `/` with infinite scroll
 - **Job details** at `/job/:id`, which also opens directly from a link
-- **Favourites**: mark or unmark a job on either screen, kept across reloads
+- **Favourites**: mark or unmark a job on either screen, kept across reloads, and listed at `/favourites`
 
 ## Setup
 
@@ -69,7 +69,7 @@ There is one domain (jobs), so the code is grouped by role rather than by featur
 - **Strict in dev, lenient in prod.** In development a schema mismatch throws with the exact failing path. In production a broken list item is dropped and reported with `console.warn` (where an error tracker would go), and the rest of the page still renders. Details have nothing to show without valid data, so they fail in both modes.
 - **Validated against real data.** The schemas were checked against all 943 live jobs and a sample of 26 detail responses. That found one job with an empty name, which now renders as "Untitled job" instead of breaking the list.
 - **Infinite scroll.** `useInfiniteQuery` for the pages, `react-intersection-observer` to notice when the end of the list is near. Pages are de-duplicated by id because the live list shifts between requests. A failed next page keeps loaded jobs and shows a retry at the bottom. Going back from a job restores the scroll position.
-- **Favourites.** A small zustand store with `persist`, keeping only job ids in `localStorage`, so the list and details always agree. Stored data is validated with zod, so a corrupted value starts an empty list instead of crashing.
+- **Favourites.** A small zustand store with `persist`, keeping only job ids in `localStorage`, so the list and details always agree. The API can't filter by ids, so the saved page loads each job's details in parallel with `useQueries` and shows a removable placeholder for jobs that have expired. Stored data is validated with zod, so a corrupted value starts an empty list instead of crashing.
 - **Libraries over custom plumbing.** Observing the end of the list and persisting state are solved problems, so they use well-known, maintained libraries instead of hand-written subscriptions.
 - **React Router in data mode.** Two routes don't need file-based routing; loaders give early prefetch and id validation, and `ScrollRestoration` handles the back navigation.
 
@@ -90,24 +90,23 @@ The task asked for about an hour of work. I also added: infinite scroll instead 
 
 Both suites run on real API responses saved in `src/test/fixtures`, so they don't depend on the live API.
 
-**Unit and integration** (Vitest, Testing Library, MSW), 33 tests:
+**Unit and integration** (Vitest, Testing Library, MSW), 36 tests:
 
 - API client: error responses with HTTP 200, 404, 5xx, network failure, responses without the Coople wrapper
 - Endpoints and mapping, pagination end detection, strict and lenient validation
 - Favourites store: toggling, persistence, corrupted storage
-- Pages: list, empty state, error and retry on both screens, a failed next page that keeps loaded jobs, direct link to a job, malformed id without an API call, unknown job
+- Pages: list, empty state, error and retry on both screens, a failed next page that keeps loaded jobs, direct link to a job, malformed id without an API call, unknown job, saved jobs with an empty state and a job that is no longer available
 
-**Browser** (Playwright, API mocked with `page.route`), 17 tests:
+**Browser** (Playwright, API mocked with `page.route`), 18 tests:
 
 - Infinite scroll, a failed next page with retry, scroll position restored after coming back from a job
-- Direct links, not found for malformed and unknown ids, favourites across the list, details and a reload
+- Direct links, not found for malformed and unknown ids, favourites across the list, details, the saved page and a reload
 - Layout at 375, 1024 and 1440 px: equal card heights, no horizontal scroll, the skeleton matches the card, pay and bookmark align with the title
 
 ## What I'd do next
 
 - Show the job's title from the list cache while details load
 - Virtualise the list for very long sessions
-- A "favourites only" filter
 - Map `jobProfileId` to a category label once there's an endpoint for it
 - Prefetch a job when its card is hovered or focused, on top of the loader's prefetch
 - Keep favourites in sync between open tabs and handle storage that refuses writes (Safari private mode)

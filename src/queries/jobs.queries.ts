@@ -2,11 +2,14 @@ import {
   type InfiniteData,
   infiniteQueryOptions,
   queryOptions,
+  type UseQueryResult,
   useInfiniteQuery,
+  useQueries,
   useQuery,
 } from "@tanstack/react-query";
 import { isApiError } from "@/api/errors";
 import { hasMoreJobs, type JobsPage, jobsApi } from "@/api/jobs/jobs.api";
+import type { JobDetails } from "@/entities/job";
 
 export type Pagination = {
   hasMore: boolean;
@@ -74,4 +77,44 @@ function isNotFound(error: Error) {
 
 export function useJob(id: string) {
   return useQuery({ ...jobQueryOptions(id), throwOnError: isNotFound });
+}
+
+export type FavouriteJob =
+  | { id: string; status: "pending" | "not_found" | "error" }
+  | { id: string; status: "success"; job: JobDetails };
+
+function toFavouriteJob(
+  id: string,
+  result: UseQueryResult<JobDetails>
+): FavouriteJob {
+  if (result.data) {
+    return { id, status: "success", job: result.data };
+  }
+  if (result.error) {
+    return { id, status: isNotFound(result.error) ? "not_found" : "error" };
+  }
+  return { id, status: "pending" };
+}
+
+export function useFavouriteJobs(ids: readonly string[]) {
+  return useQueries({
+    queries: ids.map((id) => jobQueryOptions(id)),
+    combine: (results) => {
+      const failed = results.filter(
+        (result) => result.error && !isNotFound(result.error)
+      );
+
+      return {
+        jobs: results.map((result, index) =>
+          toFavouriteJob(ids[index], result)
+        ),
+        error: failed[0]?.error ?? null,
+        retry: () => {
+          for (const result of failed) {
+            result.refetch();
+          }
+        },
+      };
+    },
+  });
 }

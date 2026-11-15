@@ -1,5 +1,23 @@
-import { BriefcaseBusinessIcon } from "lucide-react";
-import { Link, Outlet, ScrollRestoration } from "react-router";
+import { BookmarkIcon, BriefcaseBusinessIcon } from "lucide-react";
+import { Link, NavLink, Outlet, ScrollRestoration } from "react-router";
+import { Button } from "@/components/ui/button";
+import { useFavouritesStore } from "@/stores/favourites.store";
+
+function SavedLink() {
+  const count = useFavouritesStore(({ ids }) => ids.length);
+
+  return (
+    <Button asChild variant="ghost" size="sm">
+      <NavLink to="/favourites" aria-label={`Saved jobs: ${count}`}>
+        <BookmarkIcon data-icon="inline-start" />
+        Saved
+        {count > 0 && (
+          <span className="text-muted-foreground tabular-nums">{count}</span>
+        )}
+      </NavLink>
+    </Button>
+  );
+}
 
 export function RootLayout() {
   return (
@@ -10,11 +28,14 @@ export function RootLayout() {
             to="/"
             className="flex items-center gap-2.5 font-heading font-medium"
           >
-            <span className="flex size-8 items-center justify-center rounded-xl bg-brand text-primary-foreground">
+            <span className="bg-brand text-primary-foreground flex size-8 items-center justify-center rounded-xl">
               <BriefcaseBusinessIcon className="size-4.5" aria-hidden />
             </span>
             Coople jobs
           </Link>
+          <nav className="flex items-center gap-1">
+            <SavedLink />
+          </nav>
         </div>
       </header>
       <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col px-4 py-8">
