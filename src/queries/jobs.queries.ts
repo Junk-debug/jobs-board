@@ -43,6 +43,7 @@ const jobsQueryOptions = infiniteQueryOptions({
   getNextPageParam: (lastPage: JobsPage) =>
     hasMoreJobs(lastPage) ? lastPage.pageNum + 1 : undefined,
   select: selectJobs,
+  refetchOnMount: false,
 });
 
 export function useJobs() {
