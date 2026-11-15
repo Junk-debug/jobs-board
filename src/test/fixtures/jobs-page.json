@@ -1,0 +1,839 @@
+{
+  "status": 200,
+  "data": {
+    "items": [
+      {
+        "workAssignmentId": "9b881507-4c74-464e-a9f6-caf2a54ca2d1",
+        "waReadableId": "60261070511",
+        "hourlyWage": {
+          "amount": 47.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 2256.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 99,
+          "educationalLevelId": 73
+        },
+        "workAssignmentName": "Fachperson Gesundheit EFZ oder Dipl. Pflegefachperson HF / FH",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "3280",
+          "city": "Murten",
+          "countryId": 1
+        },
+        "periodFrom": 1794635100000,
+        "datePublished": 1794427390000,
+        "branchLink": "https://coople.app.link/epx59KgjZ7b"
+      },
+      {
+        "workAssignmentId": "d9fbaf3c-3f66-4186-a042-62508e8d969b",
+        "waReadableId": "60261069686",
+        "hourlyWage": {
+          "amount": 36.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 309.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 92,
+          "educationalLevelId": 61
+        },
+        "workAssignmentName": "Pflegehelfer/in SRK oder AGS",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "9322",
+          "city": "Egnach",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794635400000,
+        "datePublished": 1794634428000,
+        "branchLink": "https://coople.app.link/oCpRnl0UW7b"
+      },
+      {
+        "workAssignmentId": "8fab79b0-f091-4f2b-9093-3a7cf6fe8cc8",
+        "waReadableId": "60261071429",
+        "hourlyWage": {
+          "amount": 32.27,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 274.30,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 92,
+          "educationalLevelId": 61
+        },
+        "workAssignmentName": "Pflegehilfe-SRK",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8708",
+          "city": "Männedorf",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794636000000,
+        "datePublished": 1794581930000,
+        "branchLink": "https://coople.app.link/6FRGuzkh27b"
+      },
+      {
+        "workAssignmentId": "ae737228-85d3-46e9-9247-844869aa8c2a",
+        "waReadableId": "60261058353",
+        "hourlyWage": {
+          "amount": 42.71,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 363.04,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 99,
+          "educationalLevelId": 73
+        },
+        "workAssignmentName": "3. OG Fachperson Gesundheit (FaGe) oder dipl.",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "6020",
+          "city": "Emmen",
+          "countryId": 1
+        },
+        "periodFrom": 1794636000000,
+        "datePublished": 1794561642000,
+        "branchLink": "https://coople.app.link/iQ0xW2dKf7b"
+      },
+      {
+        "workAssignmentId": "03c62428-1263-4d69-b91a-30ff833b059b",
+        "waReadableId": "60261071559",
+        "hourlyWage": {
+          "amount": 36.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 267.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 92,
+          "educationalLevelId": 61
+        },
+        "workAssignmentName": "EXPRESS Pflegehelfer/in SRK oder AGS",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "9322",
+          "city": "Egnach",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794639600000,
+        "datePublished": 1794634832000,
+        "branchLink": "https://coople.app.link/EMigoYki37b"
+      },
+      {
+        "workAssignmentId": "603ae40e-b81c-4cba-88bc-dbc41d8e633f",
+        "waReadableId": "60261067419",
+        "hourlyWage": {
+          "amount": 35.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 288.75,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 70,
+          "educationalLevelId": 3
+        },
+        "workAssignmentName": "Koch / Köchin GASTRO",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "5303",
+          "city": "Würenlingen",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794643200000,
+        "datePublished": 1794659964000,
+        "branchLink": "https://coople.app.link/tyPbwesmN7b"
+      },
+      {
+        "workAssignmentId": "7feb2565-54db-4f26-abd5-e41d2b88d72b",
+        "waReadableId": "60261062407",
+        "hourlyWage": {
+          "amount": 32.90,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 246.75,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 22,
+          "educationalLevelId": 12
+        },
+        "workAssignmentName": "EXPRESS Kassierer*in Damenkonfektion/ Lingerie",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8201",
+          "city": "Schaffhausen",
+          "countryId": 1
+        },
+        "periodFrom": 1794643200000,
+        "datePublished": 1794636026000,
+        "branchLink": "https://coople.app.link/ygJBZlFHu7b"
+      },
+      {
+        "workAssignmentId": "99a45ddc-e481-48e3-8e21-96e08fb647e2",
+        "waReadableId": "60261043486",
+        "hourlyWage": {
+          "amount": 35.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 1260.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 11
+        },
+        "workAssignmentName": "SA und SO FAHRER November 2026 / Abwasch Schönbühl mit dem Auto Bern-Schönbühl | SV | | KST 20161100",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "3007",
+          "city": "Bern",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794643200000,
+        "datePublished": 1792138088000,
+        "branchLink": "https://coople.app.link/AfwZjvT5p6b"
+      },
+      {
+        "workAssignmentId": "ddd8be18-91a2-4a2a-bf68-5a0f64ede1b4",
+        "waReadableId": "60261065476",
+        "hourlyWage": {
+          "amount": 30.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 330.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 70,
+          "educationalLevelId": 1008
+        },
+        "workAssignmentName": "Koch6 | Playerscorner | Küche | Swiss Life Arena / KST 28933412-KU",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8048",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794643200000,
+        "datePublished": 1793969084000,
+        "branchLink": "https://coople.app.link/uemo0IltF7b"
+      },
+      {
+        "workAssignmentId": "07b879af-224d-46ad-88a9-87427509bcad",
+        "waReadableId": "60261070572",
+        "hourlyWage": {
+          "amount": 34.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 187.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 9
+        },
+        "workAssignmentName": "Service Aushilfe",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "3703",
+          "city": "Aeschi bei Spiez",
+          "countryId": 1
+        },
+        "periodFrom": 1794646800000,
+        "datePublished": 1794467973000,
+        "branchLink": "https://coople.app.link/gtqGqBB5Z7b"
+      },
+      {
+        "workAssignmentId": "47646fba-108a-4c5a-ade0-1a793eba273a",
+        "waReadableId": "60261069214",
+        "hourlyWage": {
+          "amount": 32.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 184.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 1009
+        },
+        "workAssignmentName": "Service Bankett",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "4500",
+          "city": "Solothurn",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794646800000,
+        "datePublished": 1794620640000,
+        "branchLink": "https://coople.app.link/iB56grunV7b"
+      },
+      {
+        "workAssignmentId": "fee99413-5ab6-447d-aafc-307202e12720",
+        "waReadableId": "60261071560",
+        "hourlyWage": {
+          "amount": 33.39,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 233.73,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 22,
+          "educationalLevelId": 12
+        },
+        "workAssignmentName": "Kassierer*in Damenkonfektion/ Lingerie",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8201",
+          "city": "Schaffhausen",
+          "countryId": 1
+        },
+        "periodFrom": 1794646800000,
+        "datePublished": 1794636314000,
+        "branchLink": "https://coople.app.link/Ra5kyr6j37b"
+      },
+      {
+        "workAssignmentId": "be34a5ad-b6db-475c-bbd1-eee61e63a0db",
+        "waReadableId": "60261065272",
+        "hourlyWage": {
+          "amount": 35.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 20580.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 70,
+          "educationalLevelId": 3
+        },
+        "workAssignmentName": "Koch / Köchin EFZ | eine Person für ALLE Schichten | befristet Nov -Feb | FIKTIVE SCHICHTEN",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8330",
+          "city": "Pfäffikon",
+          "countryId": 1
+        },
+        "periodFrom": 1794649500000,
+        "datePublished": 1793365342000,
+        "branchLink": "https://coople.app.link/gYHwLTlUE7b"
+      },
+      {
+        "workAssignmentId": "8fa321f4-eeef-46c2-a813-9358cccb1f72",
+        "waReadableId": "60261061815",
+        "hourlyWage": {
+          "amount": 35.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 630.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 70,
+          "educationalLevelId": 3
+        },
+        "workAssignmentName": "Koch/Köchin im Banquet",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8032",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794650400000,
+        "datePublished": 1794641181000,
+        "branchLink": "https://coople.app.link/EPBw0qtVs7b"
+      },
+      {
+        "workAssignmentId": "14e43b57-1187-4bc0-a830-6f1067dfd167",
+        "waReadableId": "60261071567",
+        "hourlyWage": {
+          "amount": 35.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 297.50,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 92,
+          "educationalLevelId": 62
+        },
+        "workAssignmentName": "Pflegehelfer/in SRK",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8572",
+          "city": "Berg",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794655800000,
+        "datePublished": 1794639816000,
+        "branchLink": "https://coople.app.link/jicKKXgo37b"
+      },
+      {
+        "workAssignmentId": "4f9afe9e-51b3-4cae-a511-bc680a5d3092",
+        "waReadableId": "60261066258",
+        "hourlyWage": {
+          "amount": 40.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 4080.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 70,
+          "educationalLevelId": 3
+        },
+        "workAssignmentName": "Chef de Partie",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "7077",
+          "city": "Vaz/Obervaz",
+          "countryId": 1
+        },
+        "periodFrom": 1794657600000,
+        "datePublished": 1793626426000,
+        "branchLink": "https://coople.app.link/UDfCuajVJ7b"
+      },
+      {
+        "workAssignmentId": "aeb843cf-cb87-4ac4-8e73-537148bc7343",
+        "waReadableId": "60261070343",
+        "hourlyWage": {
+          "amount": 30.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 255.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 1043,
+          "educationalLevelId": 1207
+        },
+        "workAssignmentName": "Mitarbeiter Logistik",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8005",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794657600000,
+        "datePublished": 1794588655000,
+        "branchLink": "https://coople.app.link/A0180DNQY7b"
+      },
+      {
+        "workAssignmentId": "1a526542-43f0-4a01-91df-127051972412",
+        "waReadableId": "60261071524",
+        "hourlyWage": {
+          "amount": 33.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 132.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 1059
+        },
+        "workAssignmentName": "Spa Therapist / Physiotherapist",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8055",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794664800000,
+        "datePublished": 1794597736000,
+        "branchLink": "https://coople.app.link/xPtjFF9z27b"
+      },
+      {
+        "workAssignmentId": "6999b57b-c767-458e-8834-01250c0df4c0",
+        "waReadableId": "60261060554",
+        "hourlyWage": {
+          "amount": 38.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 285.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 99,
+          "educationalLevelId": 73
+        },
+        "workAssignmentName": "Fachfrau /Fachmann Gesundheit (angepasste Ausbildung)/WG6",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8008",
+          "city": "Zürich",
+          "countryId": 1
+        },
+        "periodFrom": 1794664800000,
+        "datePublished": 1793512818000,
+        "branchLink": "https://coople.app.link/eCmqo9ZJH7b"
+      },
+      {
+        "workAssignmentId": "87963b7d-e6a7-49bd-ad56-4628cc32a37a",
+        "waReadableId": "60261071526",
+        "hourlyWage": {
+          "amount": 35.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 140.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 11
+        },
+        "workAssignmentName": "Service Aushilfe",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8055",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794664800000,
+        "datePublished": 1794597786000,
+        "branchLink": "https://coople.app.link/SijbFldA27b"
+      },
+      {
+        "workAssignmentId": "a583357d-67d2-4969-8949-f82d12afce2a",
+        "waReadableId": "60261069761",
+        "hourlyWage": {
+          "amount": 30.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 780.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 1009
+        },
+        "workAssignmentName": "Service-Mitarbeiter*in",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8057",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794666600000,
+        "datePublished": 1794501757000,
+        "branchLink": "https://coople.app.link/CL04q3u1W7b"
+      },
+      {
+        "workAssignmentId": "a19cc125-d759-471f-a3c8-7778ea235a83",
+        "waReadableId": "60261069078",
+        "hourlyWage": {
+          "amount": 34.40,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 172.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 9
+        },
+        "workAssignmentName": "à la carte | HALL | 14.11.26",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8600",
+          "city": "Dübendorf",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794668400000,
+        "datePublished": 1794211497000,
+        "branchLink": "https://coople.app.link/mPC0VE89U7b"
+      },
+      {
+        "workAssignmentId": "ef72ab79-2924-4fac-ba6b-8f63253a2022",
+        "waReadableId": "60261070909",
+        "hourlyWage": {
+          "amount": 28.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 182.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 11
+        },
+        "workAssignmentName": "VA20141 Banquet Foodrunner*in",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8002",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794668400000,
+        "datePublished": 1794495194000,
+        "branchLink": "https://coople.app.link/ryERwB1B07b"
+      },
+      {
+        "workAssignmentId": "27297e5a-10c8-4ddd-8371-a8eb0a622379",
+        "waReadableId": "60261071643",
+        "hourlyWage": {
+          "amount": 34.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 119.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 92,
+          "educationalLevelId": 62
+        },
+        "workAssignmentName": "/Pflegehelfer/-in",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8852",
+          "city": "Altendorf",
+          "countryId": 1
+        },
+        "periodFrom": 1794670200000,
+        "datePublished": 1794654049000,
+        "branchLink": "https://coople.app.link/6S0BjYdF37b"
+      },
+      {
+        "workAssignmentId": "4c6ad9c7-866c-44a4-92de-fe5b24016506",
+        "waReadableId": "60261071099",
+        "hourlyWage": {
+          "amount": 28.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 140.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 11
+        },
+        "workAssignmentName": "Bistro Rendez Vous Bundesplatz",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "3011",
+          "city": "Bern",
+          "countryId": 1
+        },
+        "periodFrom": 1794670200000,
+        "datePublished": 1794656602000,
+        "branchLink": "https://coople.app.link/wBkyF4zM17b"
+      },
+      {
+        "workAssignmentId": "70938f99-c46d-4e5e-9c2d-babc6a8d8712",
+        "waReadableId": "60261069991",
+        "hourlyWage": {
+          "amount": 34.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 280.50,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 92,
+          "educationalLevelId": 62
+        },
+        "workAssignmentName": "/Pflegehelfer/-in",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8852",
+          "city": "Altendorf",
+          "countryId": 1
+        },
+        "periodFrom": 1794670200000,
+        "datePublished": 1794328702000,
+        "branchLink": "https://coople.app.link/7Mgu5mJpX7b"
+      },
+      {
+        "workAssignmentId": "1bcef0f4-4171-4de6-b0ce-5d58108eae01",
+        "waReadableId": "60261071687",
+        "hourlyWage": {
+          "amount": 30.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 180.00,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 1009
+        },
+        "workAssignmentName": "EXPRESS | VIP-Service | Gastronomie | (KST 28933412)",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8048",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794672000000,
+        "datePublished": 1794661949000,
+        "branchLink": "https://coople.app.link/PQONolDO37b"
+      },
+      {
+        "workAssignmentId": "38456c39-3296-4b18-a517-09afdd3a1d78",
+        "waReadableId": "60261070995",
+        "hourlyWage": {
+          "amount": 27.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 155.25,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 1009
+        },
+        "workAssignmentName": "Service gehoben",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "5415",
+          "city": "Nussbaumen",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794672000000,
+        "datePublished": 1794504162000,
+        "branchLink": "https://coople.app.link/kFzvqZHM07b"
+      },
+      {
+        "workAssignmentId": "e5909ff9-4285-4459-92d1-647831e786f1",
+        "waReadableId": "60261070652",
+        "hourlyWage": {
+          "amount": 24.95,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 149.70,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 11
+        },
+        "workAssignmentName": "Servicemitarbeitende an der Front (m/w/d)",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "8050",
+          "city": "Zürich",
+          "state": "",
+          "countryId": 1
+        },
+        "periodFrom": 1794672000000,
+        "datePublished": 1794474754000,
+        "branchLink": "https://coople.app.link/SalH7hGd07b"
+      },
+      {
+        "workAssignmentId": "f9c4a227-c5a9-4eb1-b595-79c90162db6b",
+        "waReadableId": "60261070405",
+        "hourlyWage": {
+          "amount": 25.00,
+          "currencyId": 1
+        },
+        "salary": {
+          "amount": 137.50,
+          "currencyId": 1
+        },
+        "jobSkill": {
+          "jobProfileId": 72,
+          "educationalLevelId": 1009
+        },
+        "workAssignmentName": "Restaurantfachkraft",
+        "jobLocation": {
+          "addressStreet": "",
+          "extraAddress": "",
+          "zip": "2545",
+          "city": "Selzach",
+          "countryId": 1
+        },
+        "periodFrom": 1794672000000,
+        "datePublished": 1794407468000,
+        "branchLink": "https://coople.app.link/zVmPbHxVY7b"
+      }
+    ],
+    "total": 943
+  },
+  "errorCode": "OK",
+  "errorDetails": {},
+  "errorId": 0,
+  "error": false
+}

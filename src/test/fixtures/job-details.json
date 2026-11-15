@@ -1,0 +1,39 @@
+{
+  "status": 200,
+  "data": {
+    "workAssignmentId": "9b881507-4c74-464e-a9f6-caf2a54ca2d1",
+    "waReadableId": "60261070511",
+    "hourlyWage": {
+      "amount": 47.00,
+      "currencyId": 1
+    },
+    "salary": {
+      "amount": 2256.00,
+      "currencyId": 1
+    },
+    "jobSkill": {
+      "jobProfileId": 99,
+      "educationalLevelId": 73
+    },
+    "workAssignmentName": "Fachperson Gesundheit EFZ oder Dipl. Pflegefachperson HF / FH",
+    "jobLocation": {
+      "addressStreet": "",
+      "extraAddress": "",
+      "zip": "3280",
+      "city": "Murten",
+      "countryId": 1
+    },
+    "periodFrom": 1794635100000,
+    "datePublished": 1794427390000,
+    "branchLink": "https://coople.app.link/epx59KgjZ7b",
+    "requirements": "Sie suchen eine erfüllende, temporäre Tätigkeit im Gesundheitsbereich, in der Sie direkt einen Unterschied im Leben der Menschen machen können? Dann kommen Sie zu ! Wir suchen leidenschaftliche Fachkräfte im Gesundheitswesen, die bereit sind, in einem inspirierenden Umfeld zu arbeiten und eine individuelle Pflege für unsere Bewohner sicherzustellen.\n\n**Position: Fachperson Gesundheit EFZ oder Dipl. Pflegefachperson HF / FH**\n\nBei bieten wir nicht nur einen Arbeitsplatz, sondern eine Möglichkeit, das Leben der älteren Menschen zu bereichern. In dieser Rolle unterstützen Sie unsere Bewohner dabei, eine erstklassige Betreuung zu genießen, gewährleisten eine präzise und professionelle Pflegedokumentation und pflegen den Kontakt zu Angehörigen sowie externen Stellen.\n\n**Ihre Aufgaben:**\n- Sicherstellung einer individuellen und professionellen Pflege für unsere Bewohner\n- Dokumentation der Pflege in qualifizierter Form\n- Kommunikation mit Angehörigen und externen Fachleuten\n- Mitwirkung bei der Feststellung der Pflegebedarfsstufen durch RAI\n- Übernahme der Schichtverantwortung auf dem Wohnbereich\n\n**Anforderungen:**\n- Abgeschlossene Ausbildung als Fachperson Gesundheit EFZ, DN1, FASRK oder Altenpfleger/in mit Anerkennung\n- Berufserfahrung in der stationären Langzeitpflege, idealerweise mit demenziell erkrankten Menschen\n- Berufsbildner-Ausweis ist von Vorteil\n- Gute mündliche und schriftliche Deutschkenntnisse\n- Kenntnisse in RAI zur Einstufung von Demenzpatienten sind wünschenswert\n- Organisationstalent und der Wunsch, den Alltag effizient zu gestalten\n- Freude daran, Teil eines Teams zu sein und direkt mit Menschen zu arbeiten\n\nZeitzuschläge werden basierend auf unserem internen Inkonvenienzenreglement ausgezahlt.\n\nNutzen Sie diese temporäre Chance in einem speziell auf die Lebensqualität im Alter ausgerichteten Unternehmen!",
+    "periodTo": 1798727400000,
+    "firstShiftTo": 1794666600000,
+    "shiftsCount": 6,
+    "workDuration": 2880
+  },
+  "errorCode": "OK",
+  "errorDetails": {},
+  "errorId": 0,
+  "error": false
+}
