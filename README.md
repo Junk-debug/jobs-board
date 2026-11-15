@@ -78,7 +78,18 @@ Why the app is built this way, what the live API showed, and the known gaps and 
 
 ## Beyond the brief
 
-The task asked for about an hour of work. I also added: infinite scroll instead of a single page, runtime validation, a typed error model, accessible states (`aria-pressed`, status regions, skeletons), tests and an agent setup (`CLAUDE.md`).
+The task asked for about an hour of work. I also added: infinite scroll instead of a single page, runtime validation, a typed error model, accessible states (`aria-pressed`, status regions, skeletons), tests and an agent setup (see [Working with AI agents](#working-with-ai-agents)).
+
+## Working with AI agents
+
+The project was built together with Claude Code, and the repo is set up so that an agent can keep working on it without breaking the structure.
+
+- **Instructions.** [`CLAUDE.md`](CLAUDE.md) holds the stack, the commands, where code goes and the rules every change follows. `AGENTS.md` links to it, so other agents (Codex, Cursor) read the same file.
+- **Rules by area.** [`.claude/rules/`](.claude/rules) has separate rules for the API, the UI and code style. They load only when the agent touches matching files, so each task gets the context it needs and nothing else. [`api.md`](.claude/rules/api.md) holds the whole investigation of the Coople API: status codes, fields, quirks and the commands to check them again.
+- **Guardrails in tools, not in trust.** Strict TypeScript, zod at the API boundary and Biome rules that block `fetch` outside the API client and API imports in components. A wrong move fails the check instead of waiting for review.
+- **Nothing counts as done until it's verified.** API facts are checked against the live API, behaviour by tests, layout in a real browser. A bug first gets a test that fails because of it, then the fix: the failed next page that wiped the list and dates shifting by a day were both caught this way. Visual changes are checked with Playwright screenshots and measurements, not by eye.
+- **One gate.** `pnpm check` and `pnpm e2e` are what the agent runs before calling a change done, and the same commands run in CI.
+- **Decisions on paper.** [`DECISIONS.md`](DECISIONS.md) explains why things are the way they are, so a person or an agent reads the reason before changing them.
 
 ## Tests
 

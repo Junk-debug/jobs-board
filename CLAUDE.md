@@ -32,11 +32,22 @@ Vite, React 19, TypeScript (strict), React Router 8 (data mode), TanStack Query 
 
 - Do: all network calls go through `src/api/client.ts`. Biome blocks `fetch` elsewhere
 - Do: every screen handles loading, error with retry, empty and not found
-- Do: add or update a test with every behaviour change. Tests find elements by role and accessible name, not by test ids
 - Do: update `README.md` in the same change whenever it describes something you changed: features, commands, setup, folders, tests and their counts
 - Do: when a change makes a trade-off (a new library, a policy, a known gap), add it to `DECISIONS.md` with the reason
 - Don't: add dependencies without asking the user first
 - Don't: put data fetching in components. Biome blocks `@/api/*` imports from `src/components`
+
+## How to verify a change
+
+Nothing counts as true until it's checked against something real: the live API, a test, or the app in a browser.
+
+- Facts about the Coople API come from the live API, not from guesses. Check with the commands in `.claude/rules/api.md`, and before tightening a schema run it against the full live list
+- Every behaviour change comes with a test. A bug gets a test that fails because of the bug first, then the fix
+- Tests find elements by role and accessible name, not by test ids
+- UI behaviour is checked with Playwright, not by reading the code. For a visual change take screenshots at phone and desktop width and look at them; measure alignment instead of judging by eye
+- While working, run only the file you're changing: `pnpm exec vitest run <file>` or `pnpm exec playwright test <spec>`
+- A failing test is read to the end and the cause is fixed. Don't weaken an assertion, skip a test or delete it to get green; if the test itself is wrong, say so
+- Done means `pnpm check` is green, and `pnpm e2e` too when UI or behaviour changed. If something couldn't be checked, say what and why instead of calling it done
 
 ## Rules by area
 
