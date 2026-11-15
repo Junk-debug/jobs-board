@@ -1,16 +1,16 @@
 # Coople jobs
 
-Two-screen web app over Coople's public jobs API: a job list with infinite scroll and a job details page, with favourites stored locally.
+Web app over Coople's public jobs API: a job list with infinite scroll, a job details page and a saved jobs page, with favourites stored locally. Why things are built this way is in `DECISIONS.md`. Read it before changing the stack or the structure.
 
 ## Stack
 
-Vite, React 19, TypeScript (strict), React Router 8 (data mode), TanStack Query 5, zod 4, Tailwind 4 with shadcn (preset `b1VpqVZQ`), Vitest + Testing Library + MSW.
+Vite, React 19, TypeScript (strict), React Router 8 (data mode), TanStack Query 5, zustand, zod 4, Tailwind 4 with shadcn (preset `b1VpqVZQ`), Biome, Vitest + Testing Library + MSW, Playwright.
 
 ## Commands
 
 - Package manager is pnpm (pinned in `package.json`). Don't use npm or yarn, don't commit other lockfiles
 - `pnpm dev` starts the app on Vite with the `/api` proxy to coople.com
-- `pnpm check` runs typecheck, lint, format check and unit tests. Run it before saying a change is done
+- `pnpm check` runs typecheck, Biome (lint and format) and unit tests. Run it before saying a change is done. `pnpm format` fixes formatting and import order
 - `pnpm e2e` runs the Playwright browser tests with the API mocked from fixtures. Run it after any change to UI or behaviour, and add a spec in `e2e/` for new behaviour instead of checking it by hand
 - `pnpm test` runs unit tests once, `pnpm test:watch` in watch mode
 - `pnpm dlx shadcn@latest add <component>` adds a shadcn component to `src/components/ui`
@@ -32,7 +32,9 @@ Vite, React 19, TypeScript (strict), React Router 8 (data mode), TanStack Query 
 
 - Do: all network calls go through `src/api/client.ts`. Biome blocks `fetch` elsewhere
 - Do: every screen handles loading, error with retry, empty and not found
-- Do: add or update a test with every behaviour change
+- Do: add or update a test with every behaviour change. Tests find elements by role and accessible name, not by test ids
+- Do: update `README.md` in the same change whenever it describes something you changed: features, commands, setup, folders, tests and their counts
+- Do: when a change makes a trade-off (a new library, a policy, a known gap), add it to `DECISIONS.md` with the reason
 - Don't: add dependencies without asking the user first
 - Don't: put data fetching in components. Biome blocks `@/api/*` imports from `src/components`
 

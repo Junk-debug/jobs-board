@@ -1,6 +1,6 @@
 # Coople jobs
 
-A minimal two-screen web app over Coople's public jobs API:
+A small web app over Coople's public jobs API:
 
 - **Job list** at `/` with infinite scroll
 - **Job details** at `/job/:id`, which also opens directly from a link
@@ -24,7 +24,7 @@ Open http://localhost:5173.
 | `pnpm build` then `pnpm preview` | Production build, served with the same proxy |
 | `pnpm test`                      | Unit and integration tests                   |
 | `pnpm e2e`                       | Browser tests with Playwright, API mocked    |
-| `pnpm check`                     | Typecheck, lint, format check and unit tests |
+| `pnpm check`                     | Typecheck, Biome lint and format, unit tests |
 
 The first `pnpm e2e` run needs a browser: `pnpm exec playwright install chromium`.
 
@@ -60,27 +60,11 @@ There is one domain (jobs), so the code is grouped by role rather than by featur
 2. The loader starts prefetching the job into the TanStack Query cache, so the request begins before the page renders.
 3. `apiClient.get` calls `/api/...`, which Vite proxies to coople.com, and unwraps the Coople response into data or a typed `ApiError` (`not_found`, `network`, `server`, `invalid_response`).
 4. The entity schema validates the payload against Coople's shape and transforms it into the domain model in the same step (`workAssignmentName` → `title`, timestamps → `Date`).
-5. The query client retries only network and server errors. The page renders loading, not found, error with retry, or the job.
+5. The query client retries network errors, 5xx, 408 and 429. The page renders loading, not found, error with retry, or the job.
 
 ## Decisions
 
-- **Proxy instead of direct calls.** Coople's API sends no CORS headers and answers the preflight with 401, so a browser can't call it directly. Vite proxies `/api` in both `dev` and `preview`, and `vercel.json` does the same on Vercel with a rewrite.
-- **Runtime validation with zod.** The API is undocumented, so types alone would be guesses. Schemas describe only the fields the app uses, and the UI only sees the mapped domain model.
-- **Strict in dev, lenient in prod.** In development a schema mismatch throws with the exact failing path. In production a broken list item is dropped and reported with `console.warn` (where an error tracker would go), and the rest of the page still renders. Details have nothing to show without valid data, so they fail in both modes.
-- **Validated against real data.** The schemas were checked against all 943 live jobs and a sample of 26 detail responses. That found one job with an empty name, which now renders as "Untitled job" instead of breaking the list.
-- **Infinite scroll.** `useInfiniteQuery` for the pages, `react-intersection-observer` to notice when the end of the list is near. Pages are de-duplicated by id because the live list shifts between requests. A failed next page keeps loaded jobs and shows a retry at the bottom. Going back from a job restores the scroll position.
-- **Favourites.** A small zustand store with `persist`, keeping only job ids in `localStorage`, so the list and details always agree. The API can't filter by ids, so the saved page loads each job's details in parallel with `useQueries` and shows a removable placeholder for jobs that have expired. Stored data is validated with zod, so a corrupted value starts an empty list instead of crashing.
-- **Libraries over custom plumbing.** Observing the end of the list and persisting state are solved problems, so they use well-known, maintained libraries instead of hand-written subscriptions.
-- **React Router in data mode.** Two routes don't need file-based routing; loaders give early prefetch and id validation, and `ScrollRestoration` handles the back navigation.
-
-## API notes
-
-- Every response is wrapped in `{ status, error, errorCode, data }` (a pattern often called a response envelope), and `error: true` can arrive with HTTP 200.
-- An unknown UUID returns 404, but a malformed id returns 401. That's why ids are validated before any request.
-- `pageNum` starts at 0. `pageNum=-1` or missing parameters return 500.
-- `currencyId`, `countryId` and `jobProfileId` are numeric ids without labels. The app shows `currencyId: 1` as CHF, the only id in the current data and the currency Coople's own site shows for these jobs. Other ids show the amount without a currency.
-- `workDuration` is the total of all shifts in minutes, and `salary` is the hourly wage times that duration.
-- The description (`requirements`) is Markdown and is rendered with `react-markdown`, which doesn't render raw HTML.
+Why the app is built this way, what the live API showed, and the known gaps and next steps are in [DECISIONS.md](DECISIONS.md).
 
 ## Beyond the brief
 
@@ -90,10 +74,10 @@ The task asked for about an hour of work. I also added: infinite scroll instead 
 
 Both suites run on real API responses saved in `src/test/fixtures`, so they don't depend on the live API.
 
-**Unit and integration** (Vitest, Testing Library, MSW), 36 tests:
+**Unit and integration** (Vitest, Testing Library, MSW), 46 tests:
 
-- API client: error responses with HTTP 200, 404, 5xx, network failure, responses without the Coople wrapper
-- Endpoints and mapping, pagination end detection, strict and lenient validation
+- API client: error responses with HTTP 200, 404, 5xx, network failure, responses without the Coople wrapper, which errors are retried
+- Endpoints and mapping, pagination end detection, strict and lenient validation, dates in Swiss time
 - Favourites store: toggling, persistence, corrupted storage
 - Pages: list, empty state, error and retry on both screens, a failed next page that keeps loaded jobs, direct link to a job, malformed id without an API call, unknown job, saved jobs with an empty state and a job that is no longer available
 
@@ -102,12 +86,3 @@ Both suites run on real API responses saved in `src/test/fixtures`, so they don'
 - Infinite scroll, a failed next page with retry, scroll position restored after coming back from a job
 - Direct links, not found for malformed and unknown ids, favourites across the list, details, the saved page and a reload
 - Layout at 375, 1024 and 1440 px: equal card heights, no horizontal scroll, the skeleton matches the card, pay and bookmark align with the title
-
-## What I'd do next
-
-- Show the job's title from the list cache while details load
-- Virtualise the list for very long sessions
-- Map `jobProfileId` to a category label once there's an endpoint for it
-- Prefetch a job when its card is hovered or focused, on top of the loader's prefetch
-- Keep favourites in sync between open tabs and handle storage that refuses writes (Safari private mode)
-- One Playwright smoke test against the live API through the proxy

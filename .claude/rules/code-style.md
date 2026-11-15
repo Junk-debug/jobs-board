@@ -8,7 +8,7 @@ paths:
 
 ## General
 
-- No comments or JSDoc. If code needs a comment, rename or extract until it doesn't. Decisions go in the README
+- No comments or JSDoc. If code needs a comment, rename or extract until it doesn't. Reasons behind decisions go in `DECISIONS.md`
 - Write the simplest thing that works. No abstraction, option or generic helper until a second real use appears
 - Delete what you replace: no commented-out code, no unused exports or files
 
@@ -26,7 +26,7 @@ paths:
 - A component either decides (a page: reads params, calls hooks, picks the screen state) or renders (gets props, shows them). Not both
 - One exported component per file. Small private helpers used only by that component can live in the same file
 - Never define a component inside another component's body. Why: it remounts on every render and loses state
-- Pass components what they need (`job`), not whole query results or setters from three levels up. If props travel more than two levels, compose with children or slots instead
+- Pass a component only the data it uses (`job`, `pagination`), not whole query results or stores. If props travel more than two levels, compose with children or slots instead
 - Keys are stable ids, never array indexes for lists that change
 - Actions are buttons, navigation is links
 
@@ -36,7 +36,7 @@ paths:
 - `useEffect` only to sync with something outside React: DOM APIs, subscriptions, timers. Not to derive state, react to a user action or fetch data. Why: derived values are computed during render, actions are handled in event handlers, data comes from TanStack Query
 - Don't copy props or query data into `useState`. Compute it during render
 - Keep state as low as possible and lift it only as high as the components that share it
-- Read external stores with `useSyncExternalStore`. Use `useEffectEvent` when an effect needs the latest callback without re-subscribing
+- App state shared between screens lives in a zustand store. Read browser APIs that change outside React with `useSyncExternalStore`. Use `useEffectEvent` when an effect needs the latest callback without re-subscribing
 - Components get data through props, fetching lives in hooks
 
 ## Naming
