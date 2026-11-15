@@ -28,7 +28,7 @@ export function RootLayout() {
             to="/"
             className="flex items-center gap-2.5 font-heading font-medium"
           >
-            <span className="bg-brand text-primary-foreground flex size-8 items-center justify-center rounded-xl">
+            <span className="flex size-8 items-center justify-center rounded-xl bg-brand text-primary-foreground">
               <BriefcaseBusinessIcon className="size-4.5" aria-hidden />
             </span>
             Coople jobs

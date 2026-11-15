@@ -27,6 +27,7 @@ describe("Favourites page", () => {
     expect(
       await screen.findByRole("link", { name: job.workAssignmentName })
     ).toHaveAttribute("href", `/job/${job.workAssignmentId}`);
+    expect(screen.getByText("1 job")).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Saved jobs: 1" })
     ).toBeInTheDocument();

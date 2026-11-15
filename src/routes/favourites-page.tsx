@@ -40,9 +40,11 @@ export function FavouritesPage() {
         <h1 className="font-heading text-2xl font-medium tracking-tight">
           Saved jobs
         </h1>
-        <p className="text-muted-foreground text-sm">
-          Kept in this browser only
-        </p>
+        {ids.length > 0 && (
+          <p className="text-sm text-muted-foreground">
+            {ids.length === 1 ? "1 job" : `${ids.length} jobs`}
+          </p>
+        )}
       </div>
 
       {ids.length === 0 ? (
