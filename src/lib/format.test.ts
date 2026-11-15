@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDuration, formatMoney } from "./format";
+import { formatDate, formatDuration, formatMoney } from "./format";
 
 describe("formatDuration", () => {
   it.each([
@@ -8,6 +8,12 @@ describe("formatDuration", () => {
     [45, "45 min"],
   ])("formats %i minutes as %s", (minutes, expected) => {
     expect(formatDuration(minutes)).toBe(expected);
+  });
+});
+
+describe("formatDate", () => {
+  it("shows the day in Swiss time whatever the viewer's time zone", () => {
+    expect(formatDate(new Date("2026-03-14T23:30:00Z"))).toMatch(/^15 /);
   });
 });
 

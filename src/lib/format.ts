@@ -12,6 +12,7 @@ const dateFormat = new Intl.DateTimeFormat(LOCALE, {
   day: "numeric",
   month: "short",
   year: "numeric",
+  timeZone: "Europe/Zurich",
 });
 
 export function formatMoney(money: Money): string {
