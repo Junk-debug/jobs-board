@@ -1,0 +1,64 @@
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { HttpResponse, http } from "msw";
+import { describe, expect, it } from "vitest";
+import { renderRoute } from "@/test/render-route";
+import { fixtures, JOB_DETAILS_URL, server } from "@/test/server";
+
+const job = fixtures.jobDetails.data;
+
+describe("Job page", () => {
+  it("opens directly from a link", async () => {
+    renderRoute(`/job/${job.workAssignmentId}`);
+
+    expect(
+      await screen.findByRole("heading", {
+        level: 1,
+        name: job.workAssignmentName,
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText("Total working time")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /Apply on Coople/ })
+    ).toHaveAttribute("href", job.branchLink);
+  });
+
+  it("shows not found for an id that is not a UUID without calling the API", async () => {
+    let calls = 0;
+    server.use(
+      http.get(JOB_DETAILS_URL, () => {
+        calls += 1;
+        return HttpResponse.json(fixtures.jobDetails);
+      })
+    );
+
+    renderRoute("/job/60261070511");
+
+    expect(
+      await screen.findByText("Not found", { exact: true })
+    ).toBeInTheDocument();
+    expect(calls).toBe(0);
+  });
+
+  it("shows not found for an unknown job", async () => {
+    renderRoute("/job/00000000-0000-4000-8000-000000000000");
+
+    expect(
+      await screen.findByText("Not found", { exact: true })
+    ).toBeInTheDocument();
+  });
+
+  it("keeps the favourite in sync after a reload", async () => {
+    const first = renderRoute(`/job/${job.workAssignmentId}`);
+    await userEvent.click(
+      await screen.findByRole("button", { name: /to favourites/ })
+    );
+    first.unmount();
+
+    renderRoute(`/job/${job.workAssignmentId}`);
+
+    expect(
+      await screen.findByRole("button", { name: /from favourites/ })
+    ).toHaveAttribute("aria-pressed", "true");
+  });
+});
