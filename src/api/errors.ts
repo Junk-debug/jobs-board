@@ -43,6 +43,21 @@ const RETRYABLE_KINDS: ReadonlySet<ApiErrorKind> = new Set([
   "server",
 ]);
 
+const RETRYABLE_CLIENT_STATUSES: ReadonlySet<number> = new Set([408, 429]);
+
+function isPermanentClientError(status: number | undefined) {
+  return (
+    status !== undefined &&
+    status >= 400 &&
+    status < 500 &&
+    !RETRYABLE_CLIENT_STATUSES.has(status)
+  );
+}
+
 export function isRetryableError(error: unknown): boolean {
-  return isApiError(error) && RETRYABLE_KINDS.has(error.kind);
+  return (
+    isApiError(error) &&
+    RETRYABLE_KINDS.has(error.kind) &&
+    !isPermanentClientError(error.status)
+  );
 }
