@@ -1,10 +1,20 @@
 # Coople jobs
 
+**Live demo: https://jobs-board-one.vercel.app**
+
 A small web app over Coople's public jobs API:
 
 - **Job list** at `/` with infinite scroll
 - **Job details** at `/job/:id`, which also opens directly from a link
 - **Favourites**: mark or unmark a job on either screen, kept across reloads, and listed at `/favourites`
+
+| Job list                                | Job details                                   | Saved jobs                                |
+| --------------------------------------- | --------------------------------------------- | ----------------------------------------- |
+| ![Job list](docs/screenshots/list.png) | ![Job details](docs/screenshots/details.png) | ![Saved jobs](docs/screenshots/saved.png) |
+
+| Phone                                      |
+| ------------------------------------------ |
+| ![Phone](docs/screenshots/list-mobile.png) |
 
 ## Setup
 
