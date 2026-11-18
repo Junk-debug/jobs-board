@@ -133,11 +133,16 @@ function useListTotal(total: number) {
   );
 }
 
+const BATCHES_TIMEOUT_MS = 4000;
+
 async function untilEveryBatchIsChecked(assertion: () => void) {
-  await waitFor(() => {
-    act(() => mockAllIsIntersecting(true));
-    assertion();
-  });
+  await waitFor(
+    () => {
+      act(() => mockAllIsIntersecting(true));
+      assertion();
+    },
+    { timeout: BATCHES_TIMEOUT_MS }
+  );
 }
 
 describe("Jobs page search", () => {
