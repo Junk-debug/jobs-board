@@ -3,7 +3,7 @@ import { act, renderHook, waitFor } from "@testing-library/react";
 import { HttpResponse, http } from "msw";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
-import { JOBS_PAGE_SIZE } from "@/api/jobs/jobs.api";
+import { JOBS_PAGE_SIZE } from "@/api/jobs/jobs.config";
 import { createQueryClient } from "@/lib/query-client";
 import { fakeListPage, JOBS_LIST_URL, server } from "@/test/server";
 import { useJobs } from "./jobs.queries";

@@ -11,7 +11,7 @@ export const fixtures = { jobsPage, jobDetails, jobNotFound };
 
 const FIXTURE_JOBS_COUNT = jobsPage.data.items.length;
 
-export const LIST_TOTAL = 250;
+const DEFAULT_TOTAL = 250;
 
 type FakeListOptions = {
   pageNum: number;
@@ -23,7 +23,7 @@ type FakeListOptions = {
 export function fakeListPage({
   pageNum,
   pageSize,
-  total = LIST_TOTAL,
+  total = DEFAULT_TOTAL,
   titleAt,
 }: FakeListOptions) {
   const start = pageNum * pageSize;

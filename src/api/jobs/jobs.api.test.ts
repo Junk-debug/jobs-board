@@ -4,7 +4,8 @@ import { jobSummarySchema } from "@/entities/job";
 import { fixtures, JOBS_LIST_URL, server } from "@/test/server";
 import type { ApiError } from "../errors";
 import { parseResponse, tolerantArray } from "../parse-response";
-import { hasMoreJobs, JOBS_PAGE_SIZE, jobsApi } from "./jobs.api";
+import { hasMoreJobs, jobsApi } from "./jobs.api";
+import { JOBS_PAGE_SIZE } from "./jobs.config";
 
 const firstJob = fixtures.jobsPage.data.items[0];
 

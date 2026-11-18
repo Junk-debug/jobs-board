@@ -2,19 +2,33 @@ import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HttpResponse, http } from "msw";
 import { mockAllIsIntersecting } from "react-intersection-observer/test-utils";
-import { afterEach, describe, expect, it } from "vitest";
-import { JOBS_PAGE_SIZE } from "@/api/jobs/jobs.api";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { JOBS_PAGE_SIZE } from "@/api/jobs/jobs.config";
 import { renderRoute } from "@/test/render-route";
 import {
   fakeListPage,
   fixtures,
   JOBS_LIST_URL,
-  LIST_TOTAL,
   listParams,
   server,
 } from "@/test/server";
 
+vi.mock("@/api/jobs/jobs.config", () => ({ JOBS_PAGE_SIZE: 10 }));
+
+const BATCH_COUNT = 3;
+const LIST_TOTAL = JOBS_PAGE_SIZE * (BATCH_COUNT - 1) + 5;
+
 const firstTitle = fixtures.jobsPage.data.items[0].workAssignmentName;
+
+function serveListWithTotal(total: number) {
+  server.use(
+    http.get(JOBS_LIST_URL, ({ request }) =>
+      HttpResponse.json(fakeListPage({ ...listParams(request), total }))
+    )
+  );
+}
+
+beforeEach(() => serveListWithTotal(LIST_TOTAL));
 
 describe("Jobs page", () => {
   it("lists jobs with links to their details", async () => {
@@ -112,6 +126,7 @@ const kochInFirstBatch = fakeTitles
 const kuecheCount = fakeTitles.filter((title) =>
   /k[uü]che/i.test(title)
 ).length;
+const kuecheHeading = `${kuecheCount} ${kuecheCount === 1 ? "job matches" : "jobs match"} “KUCHE”`;
 
 type ListRequest = { pageNum: number; pageSize: number };
 
@@ -125,23 +140,19 @@ function recordListRequests() {
   return requests;
 }
 
-function useListTotal(total: number) {
-  server.use(
-    http.get(JOBS_LIST_URL, ({ request }) =>
-      HttpResponse.json(fakeListPage({ ...listParams(request), total }))
-    )
-  );
+async function searchFor(text: string) {
+  await userEvent.click(screen.getByRole("searchbox"));
+  await userEvent.paste(text);
 }
 
-const BATCHES_TIMEOUT_MS = 4000;
-
-async function untilEveryBatchIsChecked(assertion: () => void) {
-  await waitFor(
-    () => {
-      act(() => mockAllIsIntersecting(true));
-      assertion();
-    },
-    { timeout: BATCHES_TIMEOUT_MS }
+async function loadNextBatch(
+  requests: ListRequest[],
+  expectedRequestCount: number
+) {
+  act(() => mockAllIsIntersecting(true));
+  await waitFor(() => expect(requests).toHaveLength(expectedRequestCount));
+  await waitFor(() =>
+    expect(screen.queryByText("Loading more jobs")).not.toBeInTheDocument()
   );
 }
 
@@ -155,20 +166,22 @@ describe("Jobs page search", () => {
     renderRoute("/");
     await screen.findByRole("link", { name: firstTitle });
 
-    await userEvent.type(screen.getByRole("searchbox"), "koch");
-    await untilEveryBatchIsChecked(() =>
-      expect(
-        screen.getByText(`${kochCount} jobs match “koch”`)
-      ).toBeInTheDocument()
-    );
+    await searchFor("koch");
+    await screen.findByText(`${kochInFirstBatch}+ jobs match “koch”`);
+    await loadNextBatch(requests, 2);
+    await loadNextBatch(requests, 3);
+    expect(
+      screen.getByText(`${kochCount} jobs match “koch”`)
+    ).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Clear search" }));
     await screen.findByText(/jobs on Coople/);
-    const requestsBeforeScroll = requests.length;
     act(() => mockAllIsIntersecting(true));
 
-    await screen.findByText("You've seen all jobs.");
+    expect(
+      await screen.findByText("You've seen all jobs.")
+    ).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(LIST_TOTAL);
-    expect(requests).toHaveLength(requestsBeforeScroll);
+    expect(requests).toHaveLength(3);
   });
 
   it("searches the same batches the list loads, one after another", async () => {
@@ -176,12 +189,10 @@ describe("Jobs page search", () => {
     renderRoute("/");
     await screen.findByRole("link", { name: firstTitle });
 
-    await userEvent.type(screen.getByRole("searchbox"), "koch");
-    await untilEveryBatchIsChecked(() =>
-      expect(
-        screen.getByText(`${kochCount} jobs match “koch”`)
-      ).toBeInTheDocument()
-    );
+    await searchFor("koch");
+    await screen.findByText(`${kochInFirstBatch}+ jobs match “koch”`);
+    await loadNextBatch(requests, 2);
+    await loadNextBatch(requests, 3);
 
     expect(requests).toEqual([
       { pageNum: 0, pageSize: JOBS_PAGE_SIZE },
@@ -191,6 +202,7 @@ describe("Jobs page search", () => {
   });
 
   it("counts matches with a plus until every batch is checked", async () => {
+    const requests = recordListRequests();
     renderRoute("/?q=koch");
 
     expect(
@@ -198,69 +210,82 @@ describe("Jobs page search", () => {
     ).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(kochInFirstBatch);
 
-    await untilEveryBatchIsChecked(() =>
-      expect(
-        screen.getByText(`${kochCount} jobs match “koch”`)
-      ).toBeInTheDocument()
-    );
+    await loadNextBatch(requests, 2);
+    expect(screen.getByText(/^\d+\+ jobs match “koch”$/)).toBeInTheDocument();
+    await loadNextBatch(requests, 3);
+
+    expect(
+      screen.getByText(`${kochCount} jobs match “koch”`)
+    ).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(kochCount);
   });
 
-  it("loads the next batch each time the end marker is still in view", async () => {
+  it("shows Searching… instead of no results until the last batch is read", async () => {
     const requests = recordListRequests();
-    renderRoute("/?q=astronaut");
-    await screen.findByText("Searching…");
-    expect(requests).toHaveLength(1);
-
-    act(() => mockAllIsIntersecting(true));
-    await waitFor(() => expect(requests).toHaveLength(2));
-    await waitFor(() =>
-      expect(screen.queryByText("Loading more jobs")).not.toBeInTheDocument()
-    );
-    act(() => mockAllIsIntersecting(true));
-    await waitFor(() => expect(requests).toHaveLength(3));
-  });
-
-  it("shows Searching… instead of no results while batches are left", async () => {
     renderRoute("/?q=astronaut");
 
     expect(await screen.findByText("Searching…")).toBeInTheDocument();
+    expect(requests).toHaveLength(1);
     expect(screen.queryByText(/No jobs match/)).not.toBeInTheDocument();
     expect(screen.queryByText(/jobs match/)).not.toBeInTheDocument();
 
-    await untilEveryBatchIsChecked(() =>
-      expect(screen.getByText("No jobs match “astronaut”")).toBeInTheDocument()
-    );
+    await loadNextBatch(requests, 2);
+    expect(screen.getByText("Searching…")).toBeInTheDocument();
+    expect(screen.queryByText(/No jobs match/)).not.toBeInTheDocument();
+
+    await loadNextBatch(requests, 3);
+    expect(screen.getByText("No jobs match “astronaut”")).toBeInTheDocument();
     expect(screen.queryByText("Searching…")).not.toBeInTheDocument();
   });
 
   it("reads every batch when nothing matches, however many there are", async () => {
-    useListTotal(900);
+    const batchCount = 9;
+    serveListWithTotal(JOBS_PAGE_SIZE * batchCount);
     const requests = recordListRequests();
     renderRoute("/?q=astronaut");
+    await screen.findByText("Searching…");
 
-    await untilEveryBatchIsChecked(() =>
-      expect(screen.getByText("No jobs match “astronaut”")).toBeInTheDocument()
-    );
+    for (let loaded = 2; loaded <= batchCount; loaded += 1) {
+      await loadNextBatch(requests, loaded);
+    }
 
+    expect(screen.getByText("No jobs match “astronaut”")).toBeInTheDocument();
     expect(requests.map((request) => request.pageNum)).toEqual([
       0, 1, 2, 3, 4, 5, 6, 7, 8,
     ]);
   });
 
   it("shows only jobs whose title matches, ignoring case and accents", async () => {
+    const requests = recordListRequests();
     const { router } = renderRoute("/");
     await screen.findByRole("link", { name: firstTitle });
 
-    await userEvent.type(screen.getByRole("searchbox"), "KUCHE");
-    await untilEveryBatchIsChecked(() =>
-      expect(
-        screen.getByText(`${kuecheCount} jobs match “KUCHE”`)
-      ).toBeInTheDocument()
-    );
+    await searchFor("KUCHE");
+    await screen.findByText(/jobs match “KUCHE”/);
+    await loadNextBatch(requests, 2);
+    await loadNextBatch(requests, 3);
 
+    expect(screen.getByText(kuecheHeading)).toBeInTheDocument();
     expect(screen.getAllByRole("listitem")).toHaveLength(kuecheCount);
     expect(router.state.location.search).toBe("?q=KUCHE");
+  });
+
+  it("writes the query to the URL once, after typing stops", async () => {
+    const { router } = renderRoute("/");
+    await screen.findByRole("link", { name: firstTitle });
+    const searches: string[] = [router.state.location.search];
+    router.subscribe((state) => {
+      if (searches.at(-1) !== state.location.search) {
+        searches.push(state.location.search);
+      }
+    });
+
+    await userEvent.type(screen.getByRole("searchbox"), "koch");
+    expect(router.state.location.search).toBe("");
+    await screen.findByText(/jobs match “koch”/);
+
+    expect(searches).toEqual(["", "?q=koch"]);
+    expect(router.state.historyAction).toBe("REPLACE");
   });
 
   it("searches the query from the URL on load", async () => {
@@ -286,13 +311,14 @@ describe("Jobs page search", () => {
   });
 
   it("offers to show all jobs when nothing matches", async () => {
+    const requests = recordListRequests();
     renderRoute("/?q=astronaut");
-    await untilEveryBatchIsChecked(() =>
-      expect(screen.getByText("No jobs match “astronaut”")).toBeInTheDocument()
-    );
+    await screen.findByText("Searching…");
+    await loadNextBatch(requests, 2);
+    await loadNextBatch(requests, 3);
 
     await userEvent.click(
-      screen.getByRole("button", { name: "Show all jobs" })
+      await screen.findByRole("button", { name: "Show all jobs" })
     );
 
     expect(
@@ -318,7 +344,9 @@ describe("Jobs page search", () => {
           failFirstBatch = false;
           return new HttpResponse(null, { status: 503 });
         }
-        return HttpResponse.json(fakeListPage(listParams(request)));
+        return HttpResponse.json(
+          fakeListPage({ ...listParams(request), total: LIST_TOTAL })
+        );
       })
     );
 
@@ -343,9 +371,12 @@ describe("Jobs page search", () => {
           failSecondBatch = false;
           return new HttpResponse(null, { status: 503 });
         }
-        return HttpResponse.json(fakeListPage(params));
+        return HttpResponse.json(
+          fakeListPage({ ...params, total: LIST_TOTAL })
+        );
       })
     );
+    const requests = recordListRequests();
     renderRoute("/?q=koch");
     await screen.findByText(`${kochInFirstBatch}+ jobs match “koch”`);
     act(() => mockAllIsIntersecting(true));
@@ -356,11 +387,11 @@ describe("Jobs page search", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(kochInFirstBatch);
 
     await userEvent.click(screen.getByRole("button", { name: "Try again" }));
+    await waitFor(() => expect(requests).toHaveLength(3));
+    await loadNextBatch(requests, 4);
 
-    await untilEveryBatchIsChecked(() =>
-      expect(
-        screen.getByText(`${kochCount} jobs match “koch”`)
-      ).toBeInTheDocument()
-    );
+    expect(
+      screen.getByText(`${kochCount} jobs match “koch”`)
+    ).toBeInTheDocument();
   });
 });
