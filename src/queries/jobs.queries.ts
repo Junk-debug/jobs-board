@@ -7,9 +7,16 @@ import {
   useQueries,
   useQuery,
 } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { isApiError } from "@/api/errors";
-import { hasMoreJobs, type JobsPage, jobsApi } from "@/api/jobs/jobs.api";
+import {
+  hasMoreJobs,
+  type JobsPage,
+  jobsApi,
+  type SearchableJobs,
+} from "@/api/jobs/jobs.api";
 import type { JobDetails } from "@/entities/job";
+import { matchesTitle } from "@/lib/search";
 
 export type Pagination = {
   hasMore: boolean;
@@ -63,6 +70,39 @@ export function useJobs() {
     error: query.error,
     refetch: query.refetch,
     pagination,
+  };
+}
+
+const SEARCHABLE_JOBS_STALE_TIME = 5 * 60_000;
+
+const searchableJobsQueryOptions = queryOptions({
+  queryKey: ["jobs", "searchable"],
+  queryFn: ({ signal }) => jobsApi.getSearchable(signal),
+  staleTime: SEARCHABLE_JOBS_STALE_TIME,
+});
+
+export function useJobSearch(query: string) {
+  const selectMatches = useCallback(
+    (data: SearchableJobs) => ({
+      jobs: data.items.filter((job) => matchesTitle(job.title, query)),
+      total: data.total,
+      searchedCount: data.searchedCount,
+    }),
+    [query]
+  );
+  const { data, ...search } = useQuery({
+    ...searchableJobsQueryOptions,
+    enabled: query.trim() !== "",
+    select: selectMatches,
+  });
+
+  return {
+    jobs: data?.jobs ?? [],
+    total: data?.total,
+    searchedCount: data?.searchedCount,
+    status: data ? "success" : search.status,
+    error: search.error,
+    refetch: search.refetch,
   };
 }
 

@@ -24,6 +24,9 @@ Notes on the choices in this project and on what is still open. Setup and struct
 | Dates in `Europe/Zurich`                           | All jobs are in Switzerland. In the viewer's own time zone, a job published just after midnight in Zurich shows the day before in the Americas.                                                                        |
 | Retry network errors, 5xx, 408 and 429 only        | TanStack Query retries every error by default. These can pass on their own; other 4xx and responses that fail validation would fail the same way again.                                                               |
 | The list is not refetched on mount or on focus     | Coming back to a stale list would request every loaded page again, one after another.                                                                                                                                  |
+| Search loads the full list, on the first search only | The API has no search parameter, and filtering only the loaded pages would miss jobs further down. `pageSize=1000` returns every job in one request (905 jobs, about 460 KB, 74 KB gzipped, in November 2026). People who never search don't pay for it; after the first search the list is cached for 5 minutes and every query is instant. |
+| Title matching ignores case and accents, nothing else | A plain "contains" on the lowercased title, with accents removed by Unicode normalisation (`kuche` finds "Küche"). No fuzzy matching or ranking, so results keep the list order and it's clear why a job matched. A library like MiniSearch can replace `matchesTitle` later if typos turn out to matter. |
+| The search query lives in the URL (`?q=`)           | It survives a reload, going back from a job and a shared link. It's written 250 ms after typing stops, replacing the history entry, so Back doesn't step through every keystroke. |
 
 ## What the live API showed
 
@@ -52,6 +55,8 @@ Known gaps:
 - The total in the list header comes from the latest page, so it can change while scrolling if jobs are published meanwhile.
 - If some saved jobs fail to load, the saved page shows one error with a retry above the jobs that did load.
 - Favourites don't sync between open tabs.
+- Search covers at most the first 1000 jobs. Above that the page says so; fetching every page would close the gap.
+- Search doesn't treat `ß` and `ss`, or `ü` and `ue`, as the same, and words must match in the order they are typed.
 - The German gender star (`Mitarbeiter*innen`) can turn into italics in a description when a line has two of them.
 
 Next steps:

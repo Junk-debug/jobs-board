@@ -55,6 +55,40 @@ describe("jobsApi.getPage", () => {
   });
 });
 
+describe("jobsApi.getSearchable", () => {
+  it("asks for up to 1000 jobs in one request", async () => {
+    let requested: URL | undefined;
+    server.use(
+      http.get(JOBS_LIST_URL, ({ request }) => {
+        requested = new URL(request.url);
+        return HttpResponse.json(fixtures.jobsPage);
+      })
+    );
+
+    const jobs = await jobsApi.getSearchable();
+
+    expect(requested?.searchParams.get("pageNum")).toBe("0");
+    expect(requested?.searchParams.get("pageSize")).toBe("1000");
+    expect(jobs.items).toHaveLength(fixtures.jobsPage.data.items.length);
+    expect(jobs.searchedCount).toBe(fixtures.jobsPage.data.total);
+  });
+
+  it("counts only the first 1000 jobs as searched when there are more", async () => {
+    server.use(
+      http.get(JOBS_LIST_URL, () =>
+        HttpResponse.json({
+          ...fixtures.jobsPage,
+          data: { ...fixtures.jobsPage.data, total: 1234 },
+        })
+      )
+    );
+
+    const jobs = await jobsApi.getSearchable();
+
+    expect(jobs).toMatchObject({ total: 1234, searchedCount: 1000 });
+  });
+});
+
 describe("hasMoreJobs", () => {
   const page = {
     pageNum: 0,

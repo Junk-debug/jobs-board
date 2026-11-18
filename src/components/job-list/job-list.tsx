@@ -39,18 +39,29 @@ function ListFooter({ pagination }: { pagination: Pagination }) {
   return null;
 }
 
-type JobListProps = {
-  jobs: readonly JobSummary[];
-  pagination: Pagination;
-};
-
-export function JobList({ jobs, pagination }: JobListProps) {
+function ListPagination({ pagination }: { pagination: Pagination }) {
   const endMarkerRef = useLoadMoreOnScroll({
     canLoadMore:
       pagination.hasMore && !pagination.isLoading && !pagination.isError,
     onLoadMore: pagination.loadMore,
   });
 
+  return (
+    <>
+      <div role="status">
+        <ListFooter pagination={pagination} />
+      </div>
+      <div ref={endMarkerRef} aria-hidden />
+    </>
+  );
+}
+
+type JobListProps = {
+  jobs: readonly JobSummary[];
+  pagination?: Pagination;
+};
+
+export function JobList({ jobs, pagination }: JobListProps) {
   return (
     <div className="flex flex-col gap-3">
       <ul className="flex flex-col gap-3">
@@ -60,10 +71,7 @@ export function JobList({ jobs, pagination }: JobListProps) {
           </li>
         ))}
       </ul>
-      <div role="status">
-        <ListFooter pagination={pagination} />
-      </div>
-      <div ref={endMarkerRef} aria-hidden />
+      {pagination && <ListPagination pagination={pagination} />}
     </div>
   );
 }

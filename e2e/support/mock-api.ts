@@ -47,6 +47,7 @@ type MockApiOptions = {
 
 type ApiCalls = {
   listPages: number[];
+  listPageSizes: number[];
   details: string[];
 };
 
@@ -56,7 +57,7 @@ export async function mockApi(
   page: Page,
   { failListPage, listDelayMs = 0 }: MockApiOptions = {}
 ): Promise<ApiCalls> {
-  const calls: ApiCalls = { listPages: [], details: [] };
+  const calls: ApiCalls = { listPages: [], listPageSizes: [], details: [] };
   let failuresLeft = failListPage?.times ?? 0;
 
   await page.route(
@@ -68,6 +69,7 @@ export async function mockApi(
       if (lastSegment === "list") {
         const pageNum = Number(url.searchParams.get("pageNum"));
         calls.listPages.push(pageNum);
+        calls.listPageSizes.push(Number(url.searchParams.get("pageSize")));
         await delay(listDelayMs);
 
         if (pageNum === failListPage?.pageNum && failuresLeft > 0) {
