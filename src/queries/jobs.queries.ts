@@ -2,6 +2,7 @@ import {
   type InfiniteData,
   infiniteQueryOptions,
   queryOptions,
+  type UseInfiniteQueryResult,
   type UseQueryResult,
   useInfiniteQuery,
   useQueries,
@@ -11,9 +12,9 @@ import { useCallback } from "react";
 import { isApiError } from "@/api/errors";
 import {
   hasMoreJobs,
+  JOBS_PAGE_SIZE,
   type JobsPage,
   jobsApi,
-  type SearchableJobs,
 } from "@/api/jobs/jobs.api";
 import type { JobDetails } from "@/entities/job";
 import { matchesTitle } from "@/lib/search";
@@ -49,19 +50,28 @@ const jobsQueryOptions = infiniteQueryOptions({
   initialPageParam: 0,
   getNextPageParam: (lastPage: JobsPage) =>
     hasMoreJobs(lastPage) ? lastPage.pageNum + 1 : undefined,
-  select: selectJobs,
   refetchOnMount: false,
 });
 
-export function useJobs() {
-  const { data, ...query } = useInfiniteQuery(jobsQueryOptions);
+type JobsInfiniteQuery = Pick<
+  UseInfiniteQueryResult,
+  "isFetchingNextPage" | "isFetchNextPageError" | "fetchNextPage"
+>;
 
-  const pagination: Pagination = {
-    hasMore: query.hasNextPage,
+function toPagination(query: JobsInfiniteQuery, hasMore: boolean): Pagination {
+  return {
+    hasMore,
     isLoading: query.isFetchingNextPage,
     isError: query.isFetchNextPageError,
     loadMore: () => query.fetchNextPage(),
   };
+}
+
+export function useJobs() {
+  const { data, ...query } = useInfiniteQuery({
+    ...jobsQueryOptions,
+    select: selectJobs,
+  });
 
   return {
     jobs: data?.jobs ?? [],
@@ -69,32 +79,33 @@ export function useJobs() {
     status: data ? "success" : query.status,
     error: query.error,
     refetch: query.refetch,
-    pagination,
+    pagination: toPagination(query, query.hasNextPage),
   };
 }
 
-const SEARCHABLE_JOBS_STALE_TIME = 5 * 60_000;
+const SEARCH_JOBS_LIMIT = 500;
 
-const searchableJobsQueryOptions = queryOptions({
-  queryKey: ["jobs", "searchable"],
-  queryFn: ({ signal }) => jobsApi.getSearchable(signal),
-  staleTime: SEARCHABLE_JOBS_STALE_TIME,
-});
+const SEARCH_BATCH_LIMIT = Math.ceil(SEARCH_JOBS_LIMIT / JOBS_PAGE_SIZE);
 
 export function useJobSearch(query: string) {
   const selectMatches = useCallback(
-    (data: SearchableJobs) => ({
-      jobs: data.items.filter((job) => matchesTitle(job.title, query)),
-      total: data.total,
-      searchedCount: data.searchedCount,
-    }),
+    (data: InfiniteData<JobsPage, number>) => {
+      const { jobs, total } = selectJobs(data);
+      return {
+        jobs: jobs.filter((job) => matchesTitle(job.title, query)),
+        searchedCount: jobs.length,
+        batchCount: data.pages.length,
+        total,
+      };
+    },
     [query]
   );
-  const { data, ...search } = useQuery({
-    ...searchableJobsQueryOptions,
-    enabled: query.trim() !== "",
+  const { data, ...search } = useInfiniteQuery({
+    ...jobsQueryOptions,
     select: selectMatches,
   });
+  const batchCount = data?.batchCount ?? 0;
+  const hasMore = search.hasNextPage && batchCount < SEARCH_BATCH_LIMIT;
 
   return {
     jobs: data?.jobs ?? [],
@@ -103,6 +114,7 @@ export function useJobSearch(query: string) {
     status: data ? "success" : search.status,
     error: search.error,
     refetch: search.refetch,
+    pagination: toPagination(search, hasMore),
   };
 }
 

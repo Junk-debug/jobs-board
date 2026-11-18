@@ -93,23 +93,13 @@ function SearchContent({ query, searchQuery, onClear }: SearchContentProps) {
     );
   }
 
-  if (searchQuery.jobs.length === 0) {
-    return (
-      <MessageState
-        title={`No jobs match “${query}”`}
-        description="Check the spelling or try a shorter part of the title."
-        action={
-          <Button variant="outline" size="sm" onClick={onClear}>
-            Show all jobs
-          </Button>
-        }
-      />
-    );
-  }
-
-  const { searchedCount, total } = searchQuery;
+  const { jobs, pagination, searchedCount, total } = searchQuery;
   const isPartial =
-    searchedCount !== undefined && total !== undefined && searchedCount < total;
+    !pagination.hasMore &&
+    searchedCount !== undefined &&
+    total !== undefined &&
+    searchedCount < total;
+  const isSearchFinished = !pagination.hasMore;
 
   return (
     <div className="flex flex-col gap-3">
@@ -119,7 +109,21 @@ function SearchContent({ query, searchQuery, onClear }: SearchContentProps) {
           {numberFormat.format(total)} jobs.
         </p>
       )}
-      <JobList jobs={searchQuery.jobs} />
+      {jobs.length === 0 && isSearchFinished && (
+        <MessageState
+          title={`No jobs match “${query}”`}
+          description="Check the spelling or try a shorter part of the title."
+          action={
+            <Button variant="outline" size="sm" onClick={onClear}>
+              Show all jobs
+            </Button>
+          }
+        />
+      )}
+      {jobs.length === 0 && !isSearchFinished && !pagination.isError && (
+        <p className="text-sm text-muted-foreground">Searching…</p>
+      )}
+      <JobList jobs={jobs} pagination={pagination} endMessage={null} />
     </div>
   );
 }
@@ -130,9 +134,17 @@ function describeJobs(total: number | undefined): string | null {
     : `${numberFormat.format(total)} jobs on Coople`;
 }
 
-function describeMatches(count: number, query: string): string {
-  const jobs = count === 1 ? "job matches" : "jobs match";
-  return `${numberFormat.format(count)} ${jobs} “${query}”`;
+function describeMatches(
+  count: number,
+  isComplete: boolean,
+  query: string
+): string | null {
+  if (count === 0 && !isComplete) {
+    return null;
+  }
+  const jobs = count === 1 && isComplete ? "job matches" : "jobs match";
+  const amount = `${numberFormat.format(count)}${isComplete ? "" : "+"}`;
+  return `${amount} ${jobs} “${query}”`;
 }
 
 export function JobsPage() {
@@ -147,7 +159,11 @@ export function JobsPage() {
         isLoading: searchQuery.status === "pending",
         summary:
           searchQuery.status === "success"
-            ? describeMatches(searchQuery.jobs.length, query)
+            ? describeMatches(
+                searchQuery.jobs.length,
+                !searchQuery.pagination.hasMore,
+                query
+              )
             : null,
       }
     : {

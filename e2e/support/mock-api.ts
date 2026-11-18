@@ -21,21 +21,46 @@ export const jobDetails = readFixture<{
 }>("job-details");
 const jobNotFound = readFixture<unknown>("job-not-found");
 
-export const PAGE_SIZE = jobsPage.data.items.length;
+export const PAGE_SIZE = 100;
 
-function jobsPageNumber(pageNum: number): JobsPageFixture {
-  if (pageNum === 0) {
-    return jobsPage;
+export const LIST_TOTAL = 250;
+
+const templates = jobsPage.data.items;
+
+function jobAt(index: number) {
+  const template = templates[index % templates.length];
+  if (index < templates.length) {
+    return template;
   }
+  return {
+    ...template,
+    workAssignmentId: `${template.workAssignmentId}-${index}`,
+    workAssignmentName: `${template.workAssignmentName} (${index})`,
+  };
+}
+
+export function fakeTitles(total: number) {
+  return Array.from(
+    { length: total },
+    (_, index) => jobAt(index).workAssignmentName
+  );
+}
+
+function listPageResponse(
+  pageNum: number,
+  pageSize: number,
+  total: number
+): JobsPageFixture {
+  const start = pageNum * pageSize;
+  const count = Math.max(0, Math.min(pageSize, total - start));
 
   return {
     ...jobsPage,
     data: {
-      ...jobsPage.data,
-      items: jobsPage.data.items.map((item) => ({
-        ...item,
-        workAssignmentId: `${item.workAssignmentId}-page-${pageNum}`,
-      })),
+      total,
+      items: Array.from({ length: count }, (_, offset) =>
+        jobAt(start + offset)
+      ),
     },
   };
 }
@@ -43,6 +68,7 @@ function jobsPageNumber(pageNum: number): JobsPageFixture {
 type MockApiOptions = {
   failListPage?: { pageNum: number; times: number };
   listDelayMs?: number;
+  total?: number;
 };
 
 type ApiCalls = {
@@ -55,7 +81,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function mockApi(
   page: Page,
-  { failListPage, listDelayMs = 0 }: MockApiOptions = {}
+  { failListPage, listDelayMs = 0, total = LIST_TOTAL }: MockApiOptions = {}
 ): Promise<ApiCalls> {
   const calls: ApiCalls = { listPages: [], listPageSizes: [], details: [] };
   let failuresLeft = failListPage?.times ?? 0;
@@ -68,8 +94,9 @@ export async function mockApi(
 
       if (lastSegment === "list") {
         const pageNum = Number(url.searchParams.get("pageNum"));
+        const pageSize = Number(url.searchParams.get("pageSize"));
         calls.listPages.push(pageNum);
-        calls.listPageSizes.push(Number(url.searchParams.get("pageSize")));
+        calls.listPageSizes.push(pageSize);
         await delay(listDelayMs);
 
         if (pageNum === failListPage?.pageNum && failuresLeft > 0) {
@@ -78,7 +105,9 @@ export async function mockApi(
           return;
         }
 
-        await route.fulfill({ json: jobsPageNumber(pageNum) });
+        await route.fulfill({
+          json: listPageResponse(pageNum, pageSize, total),
+        });
         return;
       }
 

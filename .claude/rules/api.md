@@ -8,7 +8,7 @@ paths:
 
 ## Endpoints
 
-- List: `GET https://www.coople.com/ch/resources/api/work-assignments/public-jobs/list?pageNum=0&pageSize=30`
+- List: `GET https://www.coople.com/ch/resources/api/work-assignments/public-jobs/list?pageNum=0&pageSize=100`
 - Details: `GET https://www.coople.com/ch/resources/api/work-assignments/public-jobs/{id}`
 - The app never calls coople.com from the browser. It calls `/api/...`, which is proxied to `/ch/resources/api/...`: by Vite in dev and preview, by the rewrite in `vercel.json` in production
 

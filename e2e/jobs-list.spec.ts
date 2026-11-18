@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { jobsPage, mockApi, PAGE_SIZE } from "./support/mock-api";
+import { LIST_TOTAL, mockApi, PAGE_SIZE } from "./support/mock-api";
 
 const jobCards = "main ul > li";
 
@@ -9,7 +9,7 @@ test("shows the jobs and their total", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: "Open jobs" })).toBeVisible();
   await expect(page.getByText(/jobs on Coople/)).toContainText(
-    new Intl.NumberFormat("en-CH").format(jobsPage.data.total)
+    new Intl.NumberFormat("en-CH").format(LIST_TOTAL)
   );
   await expect(page.locator(jobCards)).toHaveCount(PAGE_SIZE);
 });

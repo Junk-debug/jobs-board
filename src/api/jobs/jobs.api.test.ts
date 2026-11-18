@@ -4,14 +4,15 @@ import { jobSummarySchema } from "@/entities/job";
 import { fixtures, JOBS_LIST_URL, server } from "@/test/server";
 import type { ApiError } from "../errors";
 import { parseResponse, tolerantArray } from "../parse-response";
-import { hasMoreJobs, jobsApi } from "./jobs.api";
-
-const PAGE_SIZE = 30;
+import { hasMoreJobs, JOBS_PAGE_SIZE, jobsApi } from "./jobs.api";
 
 const firstJob = fixtures.jobsPage.data.items[0];
 
 describe("jobsApi.getPage", () => {
   it("maps a real Coople page into the domain model", async () => {
+    server.use(
+      http.get(JOBS_LIST_URL, () => HttpResponse.json(fixtures.jobsPage))
+    );
     const page = await jobsApi.getPage(0);
 
     expect(page.items).toHaveLength(fixtures.jobsPage.data.items.length);
@@ -37,7 +38,9 @@ describe("jobsApi.getPage", () => {
     await jobsApi.getPage(3);
 
     expect(requested?.searchParams.get("pageNum")).toBe("3");
-    expect(requested?.searchParams.get("pageSize")).toBe(String(PAGE_SIZE));
+    expect(requested?.searchParams.get("pageSize")).toBe(
+      String(JOBS_PAGE_SIZE)
+    );
   });
 
   it("maps an empty job name to a missing title", async () => {
@@ -55,46 +58,12 @@ describe("jobsApi.getPage", () => {
   });
 });
 
-describe("jobsApi.getSearchable", () => {
-  it("asks for up to 1000 jobs in one request", async () => {
-    let requested: URL | undefined;
-    server.use(
-      http.get(JOBS_LIST_URL, ({ request }) => {
-        requested = new URL(request.url);
-        return HttpResponse.json(fixtures.jobsPage);
-      })
-    );
-
-    const jobs = await jobsApi.getSearchable();
-
-    expect(requested?.searchParams.get("pageNum")).toBe("0");
-    expect(requested?.searchParams.get("pageSize")).toBe("1000");
-    expect(jobs.items).toHaveLength(fixtures.jobsPage.data.items.length);
-    expect(jobs.searchedCount).toBe(fixtures.jobsPage.data.total);
-  });
-
-  it("counts only the first 1000 jobs as searched when there are more", async () => {
-    server.use(
-      http.get(JOBS_LIST_URL, () =>
-        HttpResponse.json({
-          ...fixtures.jobsPage,
-          data: { ...fixtures.jobsPage.data, total: 1234 },
-        })
-      )
-    );
-
-    const jobs = await jobsApi.getSearchable();
-
-    expect(jobs).toMatchObject({ total: 1234, searchedCount: 1000 });
-  });
-});
-
 describe("hasMoreJobs", () => {
   const page = {
     pageNum: 0,
     items: [],
-    receivedCount: PAGE_SIZE,
-    total: 100,
+    receivedCount: JOBS_PAGE_SIZE,
+    total: 300,
   };
 
   it("continues while full pages come back and total is not reached", () => {
@@ -106,7 +75,7 @@ describe("hasMoreJobs", () => {
   });
 
   it("stops when the total is reached", () => {
-    expect(hasMoreJobs({ ...page, pageNum: 3, total: 120 })).toBe(false);
+    expect(hasMoreJobs({ ...page, pageNum: 2, total: 300 })).toBe(false);
   });
 });
 

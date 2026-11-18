@@ -5,7 +5,7 @@
 A small web app over Coople's public jobs API:
 
 - **Job list** at `/` with infinite scroll
-- **Search by title** on the job list: ignores case and accents, and the query is kept in the URL (`/?q=koch`), so it survives a reload, going back from a job and a shared link
+- **Search by title** on the job list: ignores case and accents, and the query is kept in the URL (`/?q=koch`), so it survives a reload, going back from a job and a shared link. The list loads in batches of 100 and search reads those same batches, up to 500 jobs
 - **Job details** at `/job/:id`, which also opens directly from a link
 - **Favourites**: mark or unmark a job on either screen, kept across reloads, and listed at `/favourites`
 
@@ -96,18 +96,18 @@ The project was built together with Claude Code, and the repo is set up so that 
 
 Both suites run on real API responses saved in `src/test/fixtures`, so they don't depend on the live API.
 
-**Unit and integration** (Vitest, Testing Library, MSW), 62 tests:
+**Unit and integration** (Vitest, Testing Library, MSW), 67 tests:
 
 - API client: error responses with HTTP 200, 404, 5xx, network failure, responses without the Coople wrapper, which errors are retried
-- Endpoints and mapping, the full list for search and its 1000-job cap, pagination end detection, strict and lenient validation, dates in Swiss time
+- Endpoints and mapping, pagination end detection, strict and lenient validation, dates in Swiss time
 - Favourites store: toggling, persistence, corrupted storage
 - Title matching: case, accents, spaces around the query, jobs without a title
 - Pages: list, empty state, error and retry on both screens, a failed next page that keeps loaded jobs, direct link to a job, malformed id without an API call, unknown job, saved jobs with an empty state and a job that is no longer available
-- Search: the full list is requested only on the first search, results and the URL, a query from the URL, clearing, no matches, a link to the plain list, the cap note, error and retry
+- Search: batches of 100 shared with the list, loading more while few jobs match, "12+" turning into an exact count, "Searching…" instead of no results until every batch is read, the 500-job limit and its note, no repeated requests after clearing, a query from the URL, a link to the plain list, error and retry (first batch and a later one)
 
-**Browser** (Playwright, API mocked with `page.route`), 23 tests:
+**Browser** (Playwright, API mocked with `page.route`), 24 tests:
 
 - Infinite scroll, a failed next page with retry, scroll position restored after coming back from a job
-- Search: results and the URL survive a reload and going back from a job; clearing with the button or Escape brings back the infinite list; no matches
+- Search: results and the URL survive a reload and going back from a job; clearing with the button or Escape brings back the loaded list without new requests; batches read by themselves when nothing matches; the 500-job limit
 - Direct links, not found for malformed and unknown ids, favourites across the list, details, the saved page and a reload
 - Layout at 375, 1024 and 1440 px: equal card heights, no horizontal scroll, the skeleton matches the card, pay and bookmark align with the title
