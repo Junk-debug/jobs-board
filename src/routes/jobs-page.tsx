@@ -93,22 +93,11 @@ function SearchContent({ query, searchQuery, onClear }: SearchContentProps) {
     );
   }
 
-  const { jobs, pagination, searchedCount, total } = searchQuery;
-  const isPartial =
-    !pagination.hasMore &&
-    searchedCount !== undefined &&
-    total !== undefined &&
-    searchedCount < total;
+  const { jobs, pagination } = searchQuery;
   const isSearchFinished = !pagination.hasMore;
 
   return (
     <div className="flex flex-col gap-3">
-      {isPartial && (
-        <p className="text-sm text-muted-foreground">
-          Search covers the first {numberFormat.format(searchedCount)} of{" "}
-          {numberFormat.format(total)} jobs.
-        </p>
-      )}
       {jobs.length === 0 && isSearchFinished && (
         <MessageState
           title={`No jobs match “${query}”`}

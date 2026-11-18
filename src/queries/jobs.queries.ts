@@ -10,12 +10,7 @@ import {
 } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { isApiError } from "@/api/errors";
-import {
-  hasMoreJobs,
-  JOBS_PAGE_SIZE,
-  type JobsPage,
-  jobsApi,
-} from "@/api/jobs/jobs.api";
+import { hasMoreJobs, type JobsPage, jobsApi } from "@/api/jobs/jobs.api";
 import type { JobDetails } from "@/entities/job";
 import { matchesTitle } from "@/lib/search";
 
@@ -83,38 +78,26 @@ export function useJobs() {
   };
 }
 
-const SEARCH_JOBS_LIMIT = 500;
-
-const SEARCH_BATCH_LIMIT = Math.ceil(SEARCH_JOBS_LIMIT / JOBS_PAGE_SIZE);
-
 export function useJobSearch(query: string) {
   const selectMatches = useCallback(
-    (data: InfiniteData<JobsPage, number>) => {
-      const { jobs, total } = selectJobs(data);
-      return {
-        jobs: jobs.filter((job) => matchesTitle(job.title, query)),
-        searchedCount: jobs.length,
-        batchCount: data.pages.length,
-        total,
-      };
-    },
+    (data: InfiniteData<JobsPage, number>) => ({
+      jobs: selectJobs(data).jobs.filter((job) =>
+        matchesTitle(job.title, query)
+      ),
+    }),
     [query]
   );
   const { data, ...search } = useInfiniteQuery({
     ...jobsQueryOptions,
     select: selectMatches,
   });
-  const batchCount = data?.batchCount ?? 0;
-  const hasMore = search.hasNextPage && batchCount < SEARCH_BATCH_LIMIT;
 
   return {
     jobs: data?.jobs ?? [],
-    total: data?.total,
-    searchedCount: data?.searchedCount,
     status: data ? "success" : search.status,
     error: search.error,
     refetch: search.refetch,
-    pagination: toPagination(search, hasMore),
+    pagination: toPagination(search, search.hasNextPage),
   };
 }
 

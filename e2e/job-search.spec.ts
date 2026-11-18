@@ -8,7 +8,6 @@ import {
 } from "./support/mock-api";
 
 const jobCards = "main ul > li";
-const SEARCH_LIMIT = 500;
 
 const kochCount = fakeTitles(LIST_TOTAL).filter((title) =>
   title.toLowerCase().includes("koch")
@@ -112,15 +111,12 @@ test("checks every batch by itself when nothing matches, then offers the full li
   await expect(page.getByRole("searchbox")).toHaveValue("");
 });
 
-test("stops at the search limit and says how much it covered", async ({
+test("reads every batch when nothing matches, however many there are", async ({
   page,
 }) => {
   const calls = await mockApi(page, { total: 900 });
   await page.goto("/?q=astronaut");
 
   await expect(page.getByText("No jobs match “astronaut”")).toBeVisible();
-  await expect(
-    page.getByText(`Search covers the first ${SEARCH_LIMIT} of 900 jobs.`)
-  ).toBeVisible();
-  expect(uniquePages(calls.listPages)).toEqual([0, 1, 2, 3, 4]);
+  expect(uniquePages(calls.listPages)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
 });

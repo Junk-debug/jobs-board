@@ -100,8 +100,6 @@ describe("Jobs page", () => {
   });
 });
 
-const formatCount = (count: number) =>
-  new Intl.NumberFormat("en-CH").format(count);
 const fakeTitles = fakeListPage({
   pageNum: 0,
   pageSize: LIST_TOTAL,
@@ -231,7 +229,7 @@ describe("Jobs page search", () => {
     expect(screen.queryByText("Searching…")).not.toBeInTheDocument();
   });
 
-  it("stops after 500 jobs and says how many it covered", async () => {
+  it("reads every batch when nothing matches, however many there are", async () => {
     useListTotal(900);
     const requests = recordListRequests();
     renderRoute("/?q=astronaut");
@@ -240,49 +238,9 @@ describe("Jobs page search", () => {
       expect(screen.getByText("No jobs match “astronaut”")).toBeInTheDocument()
     );
 
-    expect(requests.map((request) => request.pageNum)).toEqual([0, 1, 2, 3, 4]);
-    expect(
-      screen.getByText(
-        `Search covers the first ${formatCount(500)} of ${formatCount(900)} jobs.`
-      )
-    ).toBeInTheDocument();
-  });
-
-  it("gives an exact count with a note when the limit cut the search short", async () => {
-    useListTotal(900);
-    renderRoute("/?q=koch");
-
-    await untilEveryBatchIsChecked(() =>
-      expect(screen.getByText(/^\d+ jobs match “koch”$/)).toBeInTheDocument()
-    );
-    expect(
-      screen.getByText(
-        `Search covers the first ${formatCount(500)} of ${formatCount(900)} jobs.`
-      )
-    ).toBeInTheDocument();
-  });
-
-  it("searches the loaded jobs of a list that is already longer than the limit", async () => {
-    useListTotal(900);
-    renderRoute("/");
-    await screen.findByRole("link", { name: firstTitle });
-    for (const loaded of [200, 300, 400, 500, 600]) {
-      act(() => mockAllIsIntersecting(true));
-      await waitFor(() =>
-        expect(screen.getAllByRole("listitem")).toHaveLength(loaded)
-      );
-    }
-
-    await userEvent.type(screen.getByRole("searchbox"), "astronaut");
-
-    expect(
-      await screen.findByText("No jobs match “astronaut”")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        `Search covers the first ${formatCount(600)} of ${formatCount(900)} jobs.`
-      )
-    ).toBeInTheDocument();
+    expect(requests.map((request) => request.pageNum)).toEqual([
+      0, 1, 2, 3, 4, 5, 6, 7, 8,
+    ]);
   });
 
   it("shows only jobs whose title matches, ignoring case and accents", async () => {
