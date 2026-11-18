@@ -6,9 +6,8 @@ import {
 } from "@/entities/job";
 import { apiClient } from "../client";
 import { parseResponse, tolerantArray } from "../parse-response";
+import { JOBS_PAGE_SIZE } from "./jobs.config";
 import { jobsPageDtoSchema } from "./jobs.schema";
-
-const JOBS_PAGE_SIZE = 30;
 
 const JOBS_PATH = "/work-assignments/public-jobs";
 

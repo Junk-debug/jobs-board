@@ -6,7 +6,10 @@ test("opens a job from the list", async ({ page }) => {
   await page.goto("/");
 
   await page
-    .getByRole("link", { name: jobsPage.data.items[0].workAssignmentName })
+    .getByRole("link", {
+      name: jobsPage.data.items[0].workAssignmentName,
+      exact: true,
+    })
     .click();
 
   await expect(

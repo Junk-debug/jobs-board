@@ -5,6 +5,7 @@
 A small web app over Coople's public jobs API:
 
 - **Job list** at `/` with infinite scroll
+- **Search by title** on the job list: ignores case and accents, and the query is kept in the URL (`/?q=koch`), so it survives a reload, going back from a job and a shared link. The list loads in batches of 100 and search reads those same batches until there are none left
 - **Job details** at `/job/:id`, which also opens directly from a link
 - **Favourites**: mark or unmark a job on either screen, kept across reloads, and listed at `/favourites`
 
@@ -57,10 +58,10 @@ stores
 | `src/components` | All UI. Components render the props they get; the favourite button is the one exception and reads its own tiny store          |
 | `src/queries`    | Server state: TanStack Query options and hooks for jobs                                                                       |
 | `src/stores`     | Client state owned by the browser: the favourites zustand store                                                               |
-| `src/hooks`      | Generic hooks that know nothing about jobs: loading more on scroll                                                            |
+| `src/hooks`      | Generic hooks that know nothing about jobs: loading more on scroll, a debounced URL search param                              |
 | `src/api`        | Talking to Coople: HTTP client, the Coople response wrapper, schemas of Coople's responses, endpoints                         |
 | `src/entities`   | The domain model: schemas that validate a Coople response and transform it into our types, which are inferred from them       |
-| `src/lib`        | Pure functions: formatting                                                                                                    |
+| `src/lib`        | Pure functions: formatting, title matching for search                                                                         |
 
 There is one domain (jobs), so the code is grouped by role rather than by feature. Something used by a single component lives next to it (`components/job-card/`) and moves to a shared folder once a second user appears. Biome (lint and format) enforces the main boundaries: no `fetch` outside the API client, no API imports from components.
 
@@ -95,15 +96,18 @@ The project was built together with Claude Code, and the repo is set up so that 
 
 Both suites run on real API responses saved in `src/test/fixtures`, so they don't depend on the live API.
 
-**Unit and integration** (Vitest, Testing Library, MSW), 46 tests:
+**Unit and integration** (Vitest, Testing Library, MSW), 65 tests:
 
 - API client: error responses with HTTP 200, 404, 5xx, network failure, responses without the Coople wrapper, which errors are retried
 - Endpoints and mapping, pagination end detection, strict and lenient validation, dates in Swiss time
 - Favourites store: toggling, persistence, corrupted storage
+- Title matching: case, accents, spaces around the query, jobs without a title
 - Pages: list, empty state, error and retry on both screens, a failed next page that keeps loaded jobs, direct link to a job, malformed id without an API call, unknown job, saved jobs with an empty state and a job that is no longer available
+- Search: batches of 100 shared with the list, loading more while few jobs match, "12+" turning into an exact count, "Searching…" instead of no results until every batch is read, no limit on how many batches, no repeated requests after clearing, a query from the URL, a link to the plain list, error and retry (first batch and a later one)
 
-**Browser** (Playwright, API mocked with `page.route`), 18 tests:
+**Browser** (Playwright, API mocked with `page.route`), 24 tests:
 
 - Infinite scroll, a failed next page with retry, scroll position restored after coming back from a job
+- Search: results and the URL survive a reload and going back from a job; clearing with the button or Escape brings back the loaded list without new requests; batches read by themselves when nothing matches, to the last one
 - Direct links, not found for malformed and unknown ids, favourites across the list, details, the saved page and a reload
 - Layout at 375, 1024 and 1440 px: equal card heights, no horizontal scroll, the skeleton matches the card, pay and bookmark align with the title

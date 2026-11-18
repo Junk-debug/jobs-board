@@ -7,7 +7,14 @@ import { JobListSkeleton } from "./job-list-skeleton";
 
 const NEXT_PAGE_SKELETON_COUNT = 2;
 
-function ListFooter({ pagination }: { pagination: Pagination }) {
+const DEFAULT_END_MESSAGE = "You've seen all jobs.";
+
+type ListFooterProps = {
+  pagination: Pagination;
+  endMessage: string | null;
+};
+
+function ListFooter({ pagination, endMessage }: ListFooterProps) {
   if (pagination.isLoading) {
     return (
       <>
@@ -28,10 +35,10 @@ function ListFooter({ pagination }: { pagination: Pagination }) {
     );
   }
 
-  if (!pagination.hasMore) {
+  if (!pagination.hasMore && endMessage !== null) {
     return (
       <p className="py-4 text-center text-sm text-muted-foreground">
-        You&apos;ve seen all jobs.
+        {endMessage}
       </p>
     );
   }
@@ -39,12 +46,7 @@ function ListFooter({ pagination }: { pagination: Pagination }) {
   return null;
 }
 
-type JobListProps = {
-  jobs: readonly JobSummary[];
-  pagination: Pagination;
-};
-
-export function JobList({ jobs, pagination }: JobListProps) {
+function ListPagination({ pagination, endMessage }: ListFooterProps) {
   const endMarkerRef = useLoadMoreOnScroll({
     canLoadMore:
       pagination.hasMore && !pagination.isLoading && !pagination.isError,
@@ -52,18 +54,40 @@ export function JobList({ jobs, pagination }: JobListProps) {
   });
 
   return (
-    <div className="flex flex-col gap-3">
-      <ul className="flex flex-col gap-3">
-        {jobs.map((job) => (
-          <li key={job.id}>
-            <JobCard job={job} />
-          </li>
-        ))}
-      </ul>
+    <>
       <div role="status">
-        <ListFooter pagination={pagination} />
+        <ListFooter pagination={pagination} endMessage={endMessage} />
       </div>
       <div ref={endMarkerRef} aria-hidden />
+    </>
+  );
+}
+
+type JobListProps = {
+  jobs: readonly JobSummary[];
+  pagination?: Pagination;
+  endMessage?: string | null;
+};
+
+export function JobList({
+  jobs,
+  pagination,
+  endMessage = DEFAULT_END_MESSAGE,
+}: JobListProps) {
+  return (
+    <div className="flex flex-col gap-3">
+      {jobs.length > 0 && (
+        <ul className="flex flex-col gap-3">
+          {jobs.map((job) => (
+            <li key={job.id}>
+              <JobCard job={job} />
+            </li>
+          ))}
+        </ul>
+      )}
+      {pagination && (
+        <ListPagination pagination={pagination} endMessage={endMessage} />
+      )}
     </div>
   );
 }

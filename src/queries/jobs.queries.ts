@@ -2,14 +2,17 @@ import {
   type InfiniteData,
   infiniteQueryOptions,
   queryOptions,
+  type UseInfiniteQueryResult,
   type UseQueryResult,
   useInfiniteQuery,
   useQueries,
   useQuery,
 } from "@tanstack/react-query";
+import { useCallback } from "react";
 import { isApiError } from "@/api/errors";
 import { hasMoreJobs, type JobsPage, jobsApi } from "@/api/jobs/jobs.api";
 import type { JobDetails } from "@/entities/job";
+import { matchesTitle } from "@/lib/search";
 
 export type Pagination = {
   hasMore: boolean;
@@ -42,19 +45,28 @@ const jobsQueryOptions = infiniteQueryOptions({
   initialPageParam: 0,
   getNextPageParam: (lastPage: JobsPage) =>
     hasMoreJobs(lastPage) ? lastPage.pageNum + 1 : undefined,
-  select: selectJobs,
   refetchOnMount: false,
 });
 
-export function useJobs() {
-  const { data, ...query } = useInfiniteQuery(jobsQueryOptions);
+type JobsInfiniteQuery = Pick<
+  UseInfiniteQueryResult,
+  "isFetchingNextPage" | "isFetchNextPageError" | "fetchNextPage"
+>;
 
-  const pagination: Pagination = {
-    hasMore: query.hasNextPage,
+function toPagination(query: JobsInfiniteQuery, hasMore: boolean): Pagination {
+  return {
+    hasMore,
     isLoading: query.isFetchingNextPage,
     isError: query.isFetchNextPageError,
     loadMore: () => query.fetchNextPage(),
   };
+}
+
+export function useJobs() {
+  const { data, ...query } = useInfiniteQuery({
+    ...jobsQueryOptions,
+    select: selectJobs,
+  });
 
   return {
     jobs: data?.jobs ?? [],
@@ -62,7 +74,30 @@ export function useJobs() {
     status: data ? "success" : query.status,
     error: query.error,
     refetch: query.refetch,
-    pagination,
+    pagination: toPagination(query, query.hasNextPage),
+  };
+}
+
+export function useJobSearch(query: string) {
+  const selectMatches = useCallback(
+    (data: InfiniteData<JobsPage, number>) => ({
+      jobs: selectJobs(data).jobs.filter((job) =>
+        matchesTitle(job.title, query)
+      ),
+    }),
+    [query]
+  );
+  const { data, ...search } = useInfiniteQuery({
+    ...jobsQueryOptions,
+    select: selectMatches,
+  });
+
+  return {
+    jobs: data?.jobs ?? [],
+    status: data ? "success" : search.status,
+    error: search.error,
+    refetch: search.refetch,
+    pagination: toPagination(search, search.hasNextPage),
   };
 }
 
